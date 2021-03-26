@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HaotianCloud.Domain": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

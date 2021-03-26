@@ -1,0 +1,214 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    //父传子示例
+    function initForm(data) {
+        layui.use(['common'], function () {
+            var common = layui.common;
+            common.val('adminform', data);
+        });
+    }
+    layui.use(['jquery', 'form', 'laydate', 'optimizeSelectOption', 'common', 'table', 'layer'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            table = layui.table,
+
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        if (keyValue == "null") {
+            keyValue = "";
+        }
+        //权限字段
+        common.authorizeFields('adminform');
+
+        $(function () {
+
+            initControl();
+            if (!!keyValue) {
+                common.ajax({
+                    url: "/VehicleManage/Excavator/GetFormJson",
+                    dataType: "json",
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+
+                    }
+                });
+            }
+
+            form.render();
+        });
+        wcLoading.close();
+        function initControl() {
+            //此处需修改
+            //绑定数据源
+            //类型为下拉框时
+            
+
+        }
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var postData = data.field;
+
+            if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+            common.submitForm({
+                url: "/VehicleManage/Excavator/SubmitForm?keyValue=" + keyValue,
+                param: postData,
+                success: function () {
+                    common.parentreload('data-search-btn');
+                }
+            })
+            return false;
+        });
+
+
+    });
+
+    function search(fileds) {
+        layui.use(['jquery', 'form', 'common'], function () {
+            var form = layui.form,
+                $ = layui.$,
+                common = layui.common;
+            var parentform = window.name;
+            //不同弹窗
+            if (fileds == '控制器') {
+                common.modalOpen({
+                    title: "选择控制器",
+                    url: "/VehicleManage/Monitor/AddForm?parentform=" + parentform + "&name=" + "monitorName" + "&value=" + "monitorID" + "&ids=" + $('#monitorID').val(),
+                    width: "650px",
+                    height: "600px",
+                });
+            }
+            else {
+                return false;
+            }
+        });
+    }
+
+</script>
+<body>
+    <div class="layuimini-container ">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item ">
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">设备号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="DeviceNo" name="DeviceNo" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">设备名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="DeviceName" name="DeviceName" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">品牌</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="Brand" name="Brand" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">型号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="model" name="model" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item ">
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">长</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicelength" name="devicelength" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">宽</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicewide" name="devicewide" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">高</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicehigh" name="devicehigh" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <div class="layui-form-item ">
+                        <input type="hidden" id="F_Id" name="F_Id">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">IP地址</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="IPAddress" name="IPAddress" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">端口号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="port" name="port" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">子网掩码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="Subnetmask" name="Subnetmask" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">网关</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="gateway" name="gateway" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="layui-form-item ">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">控制器</label>
+                        <div class="layui-input-inline">
+                            <input id="monitorName" name="monitorName" type="text" lay-verify="required" maxlength="50" autocomplete="off" class="layui-input" onclick="search('控制器')" />
+                            <input id="monitorID" name="monitorID" type="text" hidden />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <div class="layui-row">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入备注" id="Remark" name="Remark" class="layui-textarea" style="width:800px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+                @*<div class="layui-form-item" style="margin-bottom:100px;">
+            <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+        </div>
+        <div class="layui-form-item">
+
+        </div>
+        <div class="layui-form-item">
+
+        </div>*@
+            </div>
+        </div>
+    </div>
+</body>

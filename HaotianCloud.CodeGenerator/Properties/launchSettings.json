@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HaotianCloud.CodeGenerator": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

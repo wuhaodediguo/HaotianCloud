@@ -1,0 +1,338 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<link href="~/css/stepcss.css" rel="stylesheet" />
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-carousel" id="stepForm" lay-filter="stepForm">
+                <div carousel-item>
+                    <div>
+                        <form class="layui-form layuimini-form">
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">新闻类别</label>
+                                <div class="layui-input-block">
+                                    <select id="F_CategoryId" name="F_CategoryId" lay-filter="F_CategoryId" lay-verify="required" lay-search>
+                                        <option value="">请选择</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">内容标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_Title" name="F_Title" autocomplete="off" maxlength="200" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">URL链接</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_LinkUrl" name="F_LinkUrl" autocomplete="off" maxlength="255" class="layui-input" placeholder="填写后直接跳转到该网址">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">封面图片</label>
+                                <div class="layui-input-block">
+                                    <input type="text" class="layui-input" name="F_ImgUrl" id="F_ImgUrl" maxlength="255" readonly="readonly">
+                                    <button type="button" class="layui-btn" id="upload" style=" margin-top: 10px">上传图片</button>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"></label>
+                                <div class="layui-input-block">
+                                    <div class="layui-upload-list">
+                                        <img id="F_ImgUrlPic" width="200" height="200" onclick="previewImg(this)" />
+                                        <p id="demoText"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">排序数字</label>
+                                <div class="layui-input-block">
+                                    <input type="number" pattern="[0-9]*" id="F_SortCode" name="F_SortCode" lay-verify="required|number" oninput="if(value.length>8)value=value.slice(0,8)" class="layui-input ">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">选项</label>
+                                <div class="layui-input-block">
+                                    <input id="F_IsTop" name="F_IsTop" type="checkbox" value="true" title="是否置顶">
+                                    <input id="F_IsRed" name="F_IsRed" type="checkbox" value="true" title="是否热门">
+                                    <input id="F_IsHot" name="F_IsHot" type="checkbox" value="true" title="是否推荐">
+                                    <input id="F_EnabledMark" name="F_EnabledMark" type="checkbox" value="true" checked="checked" title="是否发布">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">点击次数</label>
+                                <div class="layui-input-block">
+                                    <input type="number" pattern="[0-9]*" id="F_Click" name="F_Click" lay-verify="required" class="layui-input" value="0">
+                                </div>
+                            </div>
+                            <div class="form-group-bottom text-right">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formStep">
+                                        &emsp;下一步&emsp;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <form class="layui-form layuimini-form">
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">内容描述</label>
+                                <div class="layui-input-block">
+                                    <textarea class=" layui-hide" id="F_Description" name="F_Description" lay-verify="required" type="text/plain" style="width:100%;height:400px;"></textarea>
+                                    <div id="editor"></div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">摘要</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_Zhaiyao" name="F_Zhaiyao" autocomplete="off" class="layui-input" placeholder="不填写则自动截取内容前255字符">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">来源</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_Source" name="F_Source" autocomplete="off" value="本站" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label required">作者</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_Author" name="F_Author" autocomplete="off" value="@ViewBag.UserName" lay-verify="required" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="form-group-bottom text-right">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
+                                    <button class="layui-btn" lay-submit lay-filter="formStep2">
+                                        &emsp;下一步&emsp;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <form class="layui-form layuimini-form">
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">Seo标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_SeoTitle" name="F_SeoTitle" autocomplete="off" class="layui-input" placeholder="不填写则默认为网站标题">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">Seo关键字</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_SeoKeywords" name="F_SeoKeywords" autocomplete="off" class="layui-input" placeholder="不填写则默认为网站摘要">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">Seo描述</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_SeoDescription" name="F_SeoDescription" autocomplete="off" class="layui-input" placeholder="不填写则自动截取内容前255字符">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-hide">
+                                <label class="layui-form-label">Tags标签</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="F_Tags" name="F_Tags" autocomplete="off" class="layui-input" placeholder="多个可用英文逗号分隔开，如：a,b">
+                                </div>
+                            </div>
+                            <div class="form-group-bottom text-right">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
+                                    <button class="layui-btn site-demo-active" lay-submit lay-filter="saveBtn">
+                                        &emsp;保存&emsp;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        layui.use(['jquery', 'form', 'laydate', 'optimizeSelectOption', 'common', 'step', 'wangEditor', 'upload'], function () {
+            var form = layui.form,
+                $ = layui.$,
+                common = layui.common,
+                upload = layui.upload,
+                step = layui.step,
+                wangEditor = layui.wangEditor;
+            var editor = new wangEditor("#editor");
+            // 配置服务器端地址
+            editor.config.uploadImgServer = '/FileManage/Uploadfile/Upload';
+            editor.config.uploadImgMaxSize = 3 * 1024 * 1024;
+            editor.config.uploadImgMaxLength = 5;
+            editor.config.uploadImgParams = { filetype: 1, fileby: '新闻管理/编辑器'};
+            editor.config.showLinkImg = false;
+            editor.config.uploadImgHooks =
+            {
+                customInsert: function (insertImg, result, editor2) {
+                    uploadResult(result);
+                    if (!!result.data) {
+                        for (var i = 0; i < result.data.length; i++) {
+                            insertImg(result.data[i].src);
+                        };
+                    }
+                }
+            }
+            editor.config.onchange = function (newHtml) {
+                $("#F_Description").val(newHtml);
+            }
+            function uploadResult(res) {
+                if (res.code == 0) {
+                    layer.msg("上传图片成功", { icon: 1, time: 1000 });//使用layui的弹窗提示
+                } else {
+                    layer.msg("上传图片失败", { icon: 1, time: 1000 });
+                }
+            };
+            editor.create();
+            //普通图片上传
+            var uploadInst = upload.render({
+                elem: '#upload'
+                , url: '/FileManage/Uploadfile/Upload' //改成您自己的上传接口
+                , size: 1024
+                , accept: 'file'
+                , data: { filetype: 1, fileby: '新闻管理' }
+                , choose: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $('#F_ImgUrlPic').attr('src', result); //图片链接（base64）
+                    });
+                }
+                , done: function (res) {
+                    //如果上传失败
+                    if (res.code > 0) {
+                        //失败状态，并实现重传
+                        var demoText = $('#demoText');
+                        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        demoText.find('.demo-reload').on('click', function () {
+                            uploadInst.upload();
+                        });
+                        common.modalMsg(res.msg, "warning");
+                        return false;
+                    }
+                    $('#F_ImgUrl').val(res.data[0].src);
+                }
+                , error: function () {
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function () {
+                        uploadInst.upload();
+                    });
+                }
+            });
+            var keyValue = $.request("keyValue");
+            //权限字段
+            common.authorizeFields('stepForm');
+            wcLoading.close();
+            var postData = {};//分步骤表单，最终提交只能获取最后一个表单的数据，所以定义全局数组保存表单数据
+            step.render({
+                elem: '#stepForm',
+                filter: 'stepForm',
+                width: '100%', //设置容器宽度
+                stepWidth: '750px',
+                height: '600px',
+                stepItems: [{
+                    title: '基本信息'
+                }, {
+                    title: '详细描述'
+                }, {
+                    title: 'SEO选项'
+                }]
+            });
+            form.on('submit(formStep)', function (data) {
+                postData = $.extend(postData, data.field);
+                step.next('#stepForm');
+                return false;
+            });
+            form.on('submit(formStep2)', function (data) {
+                postData = $.extend(postData, data.field);
+                step.next('#stepForm');
+                return false;
+            });
+            $('.pre').click(function () {
+                step.pre('#stepForm');
+            });
+            $('.next').click(function () {
+                step.next('#stepForm');
+            });
+            $(function () {
+                initControl();
+                if (!!keyValue) {
+                    common.ajax({
+                        url: '/ContentManage/ArticleNews/GetFormJson',
+                        dataType: 'json',
+                        data: { keyValue: keyValue },
+                        async: false,
+                        success: function (data) {
+                            common.val('stepForm', data);
+                            $('#F_ImgUrlPic').attr('src', data.F_ImgUrl); //图片链接
+                            editor.txt.text(entitiestoUtf16($("#F_Description").val()));
+
+                        }
+                    });
+                }
+                form.render();
+            });
+            function initControl() {
+                //绑定数据源
+                //类型为下拉框时
+                $("#F_CategoryId").bindSelect({
+                    url: "/ContentManage/ArticleCategory/GetListJson",
+                    id: "F_Id",
+                    text: "F_FullName",
+                    search: true,
+                });
+            }
+            //监听提交
+            form.on('submit(saveBtn)', function (data) {
+                postData = $.extend(postData, data.field);
+                if (!postData["F_IsTop"]) postData["F_IsTop"] = false;
+                if (!postData["F_IsHot"]) postData["F_IsHot"] = false;
+                if (!postData["F_IsRed"]) postData["F_IsRed"] = false;
+                if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+                postData["F_Description"] = utf16toEntities(postData["F_Description"]);
+                common.submitForm({
+                    url: '/ContentManage/ArticleNews/SubmitForm?keyValue=' + keyValue,
+                    param: postData,
+                    success: function () {
+                        common.reloadIframe("/ContentManage/ArticleNews/Index", 'data-search-btn');
+                    }
+                })
+                return false;
+            });
+        });
+        function previewImg(obj) {
+            var img = new Image();
+            img.src = obj.src;
+            var height = img.height + 50; //获取图片高度
+            var width = img.width; //获取图片宽度
+            if (height > 500) { height = 500; };
+            if (width > 500) { width = 500; };
+            var imgHtml = "<img src='" + obj.src + "' style=\"height: " + (height - 43) + "px; width: " + width + "px; line-height: 25px!important;\"/>";
+            //弹出层
+            layer.open({
+                type: 1,
+                shade: 0.8,
+                offset: 'auto',
+                area: [width + 'px', height + 'px'],
+                shadeClose: true,//点击外围关闭弹窗
+                scrollbar: false,//不现实滚动条
+                title: "图片预览", //不显示标题
+                content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+                cancel: function () {
+                    //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+                }
+            });
+        }
+    </script>
+</body>
+

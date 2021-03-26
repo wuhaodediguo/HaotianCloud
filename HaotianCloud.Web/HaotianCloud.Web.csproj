@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <UserSecretsId>c1fb91bb-fd9e-4a3a-8c93-b84e89a0941a</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <Version>2.4.0.0</Version>
+    <AssemblyName>HaotianCloud.Web</AssemblyName>
+    <RootNamespace>HaotianCloud.Web</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="upload\**" />
+    <Content Remove="upload\**" />
+    <EmbeddedResource Remove="upload\**" />
+    <None Remove="upload\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core.Fix" Version="1.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Quartz" Version="3.2.4" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HaotianCloud.CodeGenerator\HaotianCloud.CodeGenerator.csproj" />
+    <ProjectReference Include="..\HaotianCloud.Code\HaotianCloud.Code.csproj" />
+    <ProjectReference Include="..\HaotianCloud.Service\HaotianCloud.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\SystemSecurity\Views\ServerMonitoring\" />
+    <Folder Include="wwwroot\file\local\" />
+    <Folder Include="wwwroot\js\lay-module\xm-select\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Areas\SystemManage\Views\Area\Details.cshtml" />
+    <None Include="Areas\SystemManage\Views\Area\Form.cshtml" />
+    <None Include="Areas\SystemManage\Views\Area\Index.cshtml" />
+    <None Include="Views\Home\Message.cshtml" />
+    <None Include="wwwroot\js\lay-module\flow\fonts\iconflow.svg" />
+    <None Include="wwwroot\js\lay-module\flow\fonts\iconfont.js" />
+    <None Include="wwwroot\js\lay-module\formDesigner\Sortable\.circleci\config.yml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\SystemManage\Views\CodeGenerator\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+
+</Project>

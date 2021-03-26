@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HaotianCloud.Code\HaotianCloud.Code.csproj" />
+    <ProjectReference Include="..\HaotianCloud.Domain\HaotianCloud.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

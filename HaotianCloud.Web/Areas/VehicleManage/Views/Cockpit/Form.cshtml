@@ -1,0 +1,500 @@
+﻿@{
+    ViewBag.Title = "Form";
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    //父传子示例
+    function initForm(data) {
+        layui.use(['common'], function () {
+            var common = layui.common;
+            common.val('adminform', data);
+        });
+    }
+    layui.use(['jquery', 'form', 'laydate', 'optimizeSelectOption', 'common', 'table', 'layer'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            table = layui.table,
+
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        //权限字段
+        common.authorizeFields('adminform');
+
+        $(function () {
+
+            initControl();
+            if (!!keyValue) {
+               
+                common.ajax({
+                    url: "/VehicleManage/Cockpit/GetFormJson",
+                    dataType: "json",
+                    data: { keyValue: keyValue },
+                    async: false,
+                    success: function (data) {
+                        common.val('adminform', data);
+                        var keyValue2 = $("#F_Id").val();
+                       
+                        common.ajax({
+                            dataType: "json",
+                            data: { keyValue2: keyValue2 },
+                            async: false,
+                            url: '/VehicleManage/Cockpit/GetDetailListJson',
+                            success: function (oldData) {
+                               
+                                tableIns.reload({
+                                    data: oldData.Result
+                                });
+
+                            }
+
+                        });
+
+                    }
+                });
+            }
+
+            form.render();
+        });
+        wcLoading.close();
+        debugger;
+        function initControl() {
+            //此处需修改
+            //绑定数据源
+            //类型为下拉框时
+
+        }
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var postData = data.field;
+
+            var layTableId = "layTable";
+
+            if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+            common.submitForm({
+/*                url: "/VehicleManage/Cockpit/SubmitForm?keyValue=" + keyValue,*/
+                url: "/VehicleManage/Cockpit/SubmitForm2?rowsdetail=" + JSON.stringify(table.cache[layTableId], null, 2) + "&keyValue=" + keyValue,
+                param: postData,
+                success: function () {
+                    common.parentreload('data-search-btn');
+                }
+            })
+            return false;
+        });
+
+
+        //准备视图对象
+        window.viewObj = {
+
+            tbData: [{
+                tempId: new Date().valueOf(),
+                DeviceNo: 1,
+                state: 1
+            }],
+            DeviceNoData: [
+                { id: 1, name: '网络摄像机' },
+                { id: 2, name: '模拟摄像机' },
+                { id: 3, name: '云台和传感器设备等' }
+            ],
+            EnabledMarkData: [
+                { id: 1, name: 'Activated' },
+                { id: 2, name: 'Disabled' }
+            ],
+
+            renderSelectOptions: function (data, settings) {
+
+                settings = settings || {};
+                var valueField = settings.valueField || 'value',
+                    textField = settings.textField || 'text',
+                    selectedValue = settings.selectedValue ;
+                var html = [];
+                for (var i = 0, item; i < data.length; i++) {
+                    item = data[i];
+                    html.push('<option value="');
+                    html.push(item[valueField]);
+                    html.push('"');
+                    debugger;
+                    if (selectedValue && item[valueField].toString().toLowerCase() == selectedValue.toString().toLowerCase()) {
+                        html.push(' selected="selected"');
+                    }
+                    html.push('>');
+                    html.push(item[textField]);
+                    html.push('</option>');
+                }
+                return html.join('');
+            }
+        };
+
+
+        //数据表格实例化
+        var tbWidth = $("#tableRes").width();
+        var layTableId = "layTable";
+        var tableIns = table.render({
+            elem: '#dataTable',
+            id: layTableId,
+/*            data: viewObj.tbData,*/
+            width: tbWidth,
+            totalRow: false,
+            page: false,
+            loading: true,
+            even: true, //不开启隔行背景
+            cols: [[
+                { title: '序号', type: 'numbers', width: '60' },
+                //{
+                //    field: 'DeviceNo', title: '挖掘机设备号', width: '178', templet: function (d) {
+                //        var options = viewObj.renderSelectOptions(viewObj.DeviceNoData, { valueField: "id", textField: "name", selectedValue: d.DeviceNo });
+                //        return '<a lay-event="DeviceNo"></a><select name="DeviceNo" lay-filter="DeviceNo">' + options + '</select>';
+                //    }
+                //},
+                { field: 'DeviceNo', title: '挖掘机设备号', width: '160', },
+                { field: 'DeviceName', title: '挖掘机设备名称', width: '160', },
+                { field: 'Model', title: '型号',  width: '120', },
+                { field: 'Brand', title: '品牌', width: '120', },
+                {
+                    field: 'EnabledMark', title: '状态', width: '170', templet: function (d) {
+                        var options = viewObj.renderSelectOptions(viewObj.EnabledMarkData, { valueField: "id", textField: "name", selectedValue: d.EnabledMark });
+                        return '<a lay-event="EnabledMark"></a><select name="EnabledMark" lay-filter="EnabledMark">' + options + '</select>';
+                    }
+                },
+                /*{ field: 'F_EnabledMark', title: '状态', edit: 'text', width: '80', },*/
+                //{
+                //    field: 'tempId', title: '操作', width: '60', templet: function (d) {
+                //        return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del" lay-id="' + d.tempId + '"><i class="layui-icon layui-icon-delete"></i>移除</a>';
+                //    }
+                //}
+            ]],
+            done: function (res, curr, count) {
+                viewObj.tbData = res.data;
+                $(document).on('keydown', '.layui-table-edit', function (e) {
+
+                    var td = $(this).parent("td"), tr = td.parent('tr'), trs = tr.parent().find('tr'),
+                        tr_index = tr.index(), td_index = td.index(),
+                        td_last_index = tr.find('[data-edit="text"]:last').index(),
+                        td_first_index = tr.find('[data-edit="text"]:first').index(),
+                        tr_last_index = trs.last().index(),
+                        tr_first_index = 0;
+                    switch (e.keyCode) {
+                        case 9:     //tab键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        //tab只支持上下移动切换,竟然找不到this对象所在的td
+                        case 13:     //enter键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        case 39:     //右键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        case 37:     //左键
+                            if (td_index == td_last_index) td.prevAll('[data-edit="text"]:first').click();
+                            else td.prevAll('[data-edit="text"]:first').click();
+                            break;
+                        case 38:     //上键
+                            if (tr_index == tr_first_index) tr.eq(tr_last_index).find('td').eq(td_index).click();
+                            else tr.prev().find('td').eq(td_index).click();
+                            break;
+                        case 40:     //下键
+                            if (tr_index == tr_last_index) trs.eq(0).find('td').eq(td_index).click();
+                            else tr.next().find('td').eq(td_index).click();
+                            break;
+                    }
+                })
+            }
+        });
+
+        //定义事件集合
+        var active = {
+            addRow: function () {	//添加一行
+
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+
+                var newRow = { tempId: new Date().valueOf(), DeviceNo: '1', DeviceName: '', Model: '', Manufacturer: '', ChnName: '', chnNumber: '' };
+               /* oldData.push(newRow);*/
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            updateRow: function (obj) {
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+                
+                for (var i = 0, row; i < oldData.length; i++) {
+                    row = oldData[i];
+                    if (row.tempId == obj.tempId) {
+                        $.extend(oldData[i], obj);
+                        return;
+                    }
+                }
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            removeEmptyTableCache: function () {
+                var oldData = table.cache[layTableId];
+                for (var i = 0, row; i < oldData.length; i++) {
+                    row = oldData[i];
+                    if (!row || row.length == 0) {
+                        oldData.splice(i, 1);    //删除一项
+                    }
+                    continue;
+                }
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            save: function () {
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+                
+                //document.getElementById("jsonResult").innerHTML = JSON.stringify(table.cache[layTableId], null, 2);	//使用JSON.stringify() 格式化输出JSON字符串
+            }
+        }
+
+        //激活事件
+        var activeByType = function (type, arg) {
+
+            if (arguments.length === 2) {
+                active[type] ? active[type].call(this, arg) : '';
+            } else {
+                active[type] ? active[type].call(this) : '';
+            }
+        }
+
+        //注册按钮事件
+        $('.layui-btn[data-type]').on('click', function () {
+
+            var type = $(this).data('type');
+            activeByType(type);
+
+        });
+
+        //监听select下拉选中事件
+        form.on('select(EnabledMark)', function (data) {
+
+            var elem = data.elem; //得到select原始DOM对象
+            $(elem).prev("a[lay-event='EnabledMark']").trigger("click");
+        });
+
+        //监听工具条
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+            console.log(data);
+            switch (event) {
+                case "EnabledMark":
+                    
+                    var select = tr.find("select[name='EnabledMark']");
+                    if (select) {
+                        var selectedVal = select.val();
+                   
+                        if (!selectedVal) {
+                            layer.tips("请选择一个摄像机", select.next('.layui-form-select'), { tips: [3, '#FF5722'] }); //吸附提示
+                        }
+                        console.log(selectedVal);
+                        $.extend(obj.data, { 'F_EnabledMark': selectedVal });
+                        activeByType('updateRow', obj.data);	//更新行记录对象
+                    }
+                    break;
+                case "del":
+                    layer.confirm('真的删除当前行么？', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        layer.close(index);
+                        activeByType('removeEmptyTableCache');
+                    });
+                    break;
+            }
+        });
+
+
+
+        ////监听提交
+        //form.on('submit(saveBtn)', function (data) {
+        //    var postData = data.field;
+
+        //    if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+        //    common.submitForm({
+        //        url: "/VehicleManage/Cockpit/SubmitForm?keyValue=" + keyValue,
+        //        param: postData,
+        //        success: function () {
+        //            common.parentreload('data-search-btn');
+        //        }
+        //    })
+        //    return false;
+        //});
+
+    });
+
+    function search(fileds) {
+        layui.use(['jquery', 'form', 'common'], function () {
+            var form = layui.form,
+                $ = layui.$,
+                common = layui.common;
+            var parentform = window.name;
+            //不同弹窗
+            if (fileds == '挖掘机') {
+                common.modalOpen({
+                    title: "选择挖掘机",
+                    url: "/VehicleManage/Excavator/AddForm?parentform=" + parentform + "&name=" + "excavatorName" + "&value=" + "excavatorID" + "&ids=" + $('#excavatorID').val(),
+                    width: "650px",
+                    height: "600px",
+                });
+            }
+            else {
+                return false;
+            }
+        });
+    }
+
+
+</script>
+<body>
+    <div class="layuimini-container ">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item ">
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">设备号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="DeviceNo" name="DeviceNo" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">设备名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="DeviceName" name="DeviceName" lay-verify="required" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">品牌</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="Brand" name="Brand" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">型号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="model" name="model" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item ">
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">长</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicelength" name="devicelength" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">宽</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicewide" name="devicewide" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">高</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="devicehigh" name="devicehigh" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="layui-form-item layui-hide">
+            <div class="layui-form-item ">
+                <input type="hidden" id="F_Id" name="F_Id">
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="IPAddress" name="IPAddress" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">端口号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="port" name="port" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">子网掩码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="Subnetmask" name="Subnetmask" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">网关</label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="gateway" name="gateway" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+        </div>*@
+
+
+
+
+                <div class="layui-form-item ">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">挖掘机</label>
+                        <div class="layui-input-block">
+                            <input id="excavatorName" name="excavatorName" type="text" lay-verify="required" style="width:800px;" autocomplete="off" class="layui-input" onclick="search('挖掘机')" />
+                            <input id="excavatorID" name="excavatorID" type="text" hidden />
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+
+                    <div class="layui-row">
+                        <label class="layui-form-label"></label>
+
+                        <div class="layui-input-block">
+                            <div id="tableRes" style="width:800px;">
+                                <table id="dataTable" lay-filter="dataTable" class="layui-hide"></table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <div class="layui-row">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入备注" id="Remark" name="Remark" class="layui-textarea" style="width:800px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+                @*<div class="layui-form-item" style="margin-bottom:100px;">
+            <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+        </div>
+        <div class="layui-form-item">
+
+        </div>
+        <div class="layui-form-item">
+
+        </div>*@
+            </div>
+        </div>
+    </div>
+</body>

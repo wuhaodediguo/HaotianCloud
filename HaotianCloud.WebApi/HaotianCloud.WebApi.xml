@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HaotianCloud.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:HaotianCloud.WebApi.Controllers.TestController">
+            <summary>
+            测试文件
+            </summary>
+        </member>
+        <member name="T:HaotianCloud.WebApi.Controllers.UserController">
+            <summary>
+            用户接口
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.UserController.Login(HaotianCloud.WebApi.Controllers.UserController.LoginRequest)">
+            <summary>
+            用户登录
+            </summary>
+            <param name="request">请求对象</param>
+            <returns></returns>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.UserController.LoginOff">
+            <summary>
+            用户退出登录
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:HaotianCloud.WebApi.Controllers.UserController.LoginRequest">
+            <summary>
+            登录请求对象
+            </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.Controllers.UserController.LoginRequest.userName">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.Controllers.UserController.LoginRequest.password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.Controllers.UserController.LoginRequest.localurl">
+            <summary>
+            域名
+            </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.AuthorizeAttribute._authorize">
+            <summary>
+            权限名称
+            </summary>
+        </member>
+        <member name="T:HaotianCloud.WebApi.AuthorizeFilterAttribute">
+            <summary>
+            权限验证
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.AuthorizeFilterAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            验证
+            </summary>
+            <param name="context"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HaotianCloud.WebApi.LockAttribute">
+            <summary>
+            防重复提交
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.LockAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            拦截
+            </summary>
+            <param name="context"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HaotianCloud.WebApi.LoginFilterAttribute">
+            <summary>
+            验证token
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.LoginFilterAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            验证
+            </summary>
+            <param name="context"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
+        <member name="T:HaotianCloud.WebApi.ModelActionFilter">
+            <summary>
+            模型验证过滤器
+            </summary>
+        </member>
+    </members>
+</doc>

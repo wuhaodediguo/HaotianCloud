@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "HaotianCloud.Service": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
