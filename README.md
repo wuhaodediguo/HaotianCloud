@@ -2,21 +2,10 @@
 <p></p>
 
 <p align="center">
-<img src="https://HaotianCloud.vip/icon/favicon.ico" height="80"/>
+<img src="http://180.130.190.32:50000/icon/favicon.ico" height="80"/>
 </p>
 <div align="center">
 
-[![star](https://gitee.com/qian_wei_hong/HaotianCloud/badge/star.svg)](https://gitee.com/qian_wei_hong/HaotianCloud/stargazers) 
-[![fork](https://gitee.com/qian_wei_hong/HaotianCloud/badge/fork.svg)](https://gitee.com/qian_wei_hong/HaotianCloud/members)
-![](https://img.shields.io/badge/release-2.3.0-red)
-
-![](https://img.shields.io/badge/.net-5.0.0-blue)
-![](https://img.shields.io/badge/Chloe-4.12.0-blue)
-![](https://img.shields.io/badge/layui-2.5.5-blue)
-
-![](https://img.shields.io/badge/Quartz-3.2.4-brightgreen)
-![](https://img.shields.io/badge/Autofac-6.1.0-brightgreen)
-![](https://img.shields.io/badge/SignalR-4.2.2-brightgreen)
 </div>
 
 ----
@@ -42,10 +31,8 @@
 - 租户管理(未实现，理论阶段)
 
 
-- .net4.5版地址：https://gitee.com/qian_wei_hong/HaotianCloud/tree/net4.5
-- .netcore3.1版地址：https://gitee.com/qian_wei_hong/HaotianCloud/tree/netcore3.1
-- 项目演示地址：http://www.HaotianCloud.vip/  （账号：admin 密码：0000，数据库2个小时还原一次）
-- 文档地址：https://gitee.com/qian_wei_hong/HaotianCloud/wikis/pages
+- 项目演示地址：http://180.130.190.32:50000/  （账号：admin 密码：0000，数据库2个小时还原一次）
+- 文档地址：https://github.com/wuhaodediguo/HaotianCloud/blob/master/README.md
 
 #### 前端以及后端使用技术介绍
 
@@ -102,4 +89,4 @@
 开源项目不易，若此项目能得到你的青睐，可以捐赠支持作者持续开发与维护，感谢所有支持开源的朋友。
 
 
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0331/144842_7cf04ad6_7353672.jpeg "1585637076201.jpg")          ![输入图片说明](https://images.gitee.com/uploads/images/2020/0331/144852_8b26c8cb_7353672.png "mm_facetoface_collect_qrcode_1585637044089.png")
+![输入图片说明](https://gitee.com/wodediguo/haotian/blob/master/images/testfor1.jpg "testfor1.jpg")          ![输入图片说明](https://gitee.com/wodediguo/haotian/blob/master/images/testfor2.jpg "testfor2.png")
