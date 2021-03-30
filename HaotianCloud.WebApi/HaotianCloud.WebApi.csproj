@@ -10,13 +10,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\资料\MecCloud_Core\MecCloud.WebApi\MecCloud.WebApi.xml</DocumentationFile>
+    <DocumentationFile>D:\ruanjian\20210304\IHaoCloud-net5\HaoCloud\HaoCloud.WebApi\HaoCloud.WebApi.xml</DocumentationFile>
     <Optimize>false</Optimize>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\ruanjian\20210304\IMECCloud-net5\MECCloud\MecCloud.WebApi\MecCloud.WebApi.xml</DocumentationFile>
+    <DocumentationFile>D:\ruanjian\20210304\IHaoCloud-net5\HaoCloud\HaoCloud.WebApi\HaoCloud.WebApi.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

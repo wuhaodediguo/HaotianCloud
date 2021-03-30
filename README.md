@@ -2,12 +2,12 @@
 <p></p>
 
 <p align="center">
-<img src="https://watercloud.vip/icon/favicon.ico" height="80"/>
+<img src="https://HaotianCloud.vip/icon/favicon.ico" height="80"/>
 </p>
 <div align="center">
 
-[![star](https://gitee.com/qian_wei_hong/WaterCloud/badge/star.svg)](https://gitee.com/qian_wei_hong/WaterCloud/stargazers) 
-[![fork](https://gitee.com/qian_wei_hong/WaterCloud/badge/fork.svg)](https://gitee.com/qian_wei_hong/WaterCloud/members)
+[![star](https://gitee.com/qian_wei_hong/HaotianCloud/badge/star.svg)](https://gitee.com/qian_wei_hong/HaotianCloud/stargazers) 
+[![fork](https://gitee.com/qian_wei_hong/HaotianCloud/badge/fork.svg)](https://gitee.com/qian_wei_hong/HaotianCloud/members)
 ![](https://img.shields.io/badge/release-2.3.0-red)
 
 ![](https://img.shields.io/badge/.net-5.0.0-blue)
@@ -20,12 +20,12 @@
 </div>
 
 ----
-# WaterCloud
+# HaotianCloud
 
 #### 介绍
 
 - 请勿用于违反我国法律的web平台、如诈骗等非法平台网站。
-- WaterCloud是一套基于ASP.NET 5.0  MVC+Chloe+LayUI的框架，源代码完全开源，可以帮助你解决C#.NET项目的重复工作！
+- HaotianCloud是一套基于ASP.NET 5.0  MVC+Chloe+LayUI的框架，源代码完全开源，可以帮助你解决C#.NET项目的重复工作！
 - 采用主流框架，容易上手，简单易学，学习成本低。
 - 可完全实现二次开发让开发更多关注业务逻辑。既能快速提高开发效率，帮助公司节省人力成本，同时又不失灵活性。
 - 支持SQLServer、MySQL、Oracle 等多数据库类型。模块化设计，层次结构清晰。内置一系列企业信息管理的基础功能。
@@ -42,10 +42,10 @@
 - 租户管理(未实现，理论阶段)
 
 
-- .net4.5版地址：https://gitee.com/qian_wei_hong/WaterCloud/tree/net4.5
-- .netcore3.1版地址：https://gitee.com/qian_wei_hong/WaterCloud/tree/netcore3.1
-- 项目演示地址：http://www.watercloud.vip/  （账号：admin 密码：0000，数据库2个小时还原一次）
-- 文档地址：https://gitee.com/qian_wei_hong/WaterCloud/wikis/pages
+- .net4.5版地址：https://gitee.com/qian_wei_hong/HaotianCloud/tree/net4.5
+- .netcore3.1版地址：https://gitee.com/qian_wei_hong/HaotianCloud/tree/netcore3.1
+- 项目演示地址：http://www.HaotianCloud.vip/  （账号：admin 密码：0000，数据库2个小时还原一次）
+- 文档地址：https://gitee.com/qian_wei_hong/HaotianCloud/wikis/pages
 
 #### 前端以及后端使用技术介绍
 
@@ -72,7 +72,7 @@
 2、后端技术
 
 - 核心框架：ASP.NET 5.0、WEB API
-- 定时任务：QuartZ，实现web控制(WaterCloud.Service/AutoJob/Job下新建job，web端创建定时任务)
+- 定时任务：QuartZ，实现web控制(HaotianCloud.Service/AutoJob/Job下新建job，web端创建定时任务)
 - 持久层框架：Chloe（支持多种数据库，复杂查询操作）
 - 安全支持：过滤器、Sql注入、请求伪造
 - 服务端验证：实体模型验证
@@ -94,7 +94,7 @@
 1. 前端参考Layui 官方文档：https://www.layui.com/doc/
 2. Layui框架参考Layuimini 码云地址：https://gitee.com/zhongshaofa/layuimini
 3. Chole.ORM 文档地址：http://www.52chloe.com/Wiki/Document
-4. WaterCloud讨论交流QQ群（1065447456）
+4. HaotianCloud讨论交流QQ群（127557927）
 5. 多租户可以使用Furion框架实现，码云地址：https://gitee.com/monksoul/Furion
 
 #### 捐赠支持

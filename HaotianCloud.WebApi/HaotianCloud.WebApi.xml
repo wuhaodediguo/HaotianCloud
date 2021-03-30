@@ -6,7 +6,7 @@
     <members>
         <member name="T:HaotianCloud.WebApi.Controllers.TestController">
             <summary>
-            测试文件
+            测试001文件
             </summary>
         </member>
         <member name="T:HaotianCloud.WebApi.Controllers.UserController">
@@ -14,6 +14,11 @@
             用户接口
             </summary>
         </member>
+      <member name="T:HaotianCloud.WebApi.Controllers.YGController">
+        <summary>
+          瑶光盒子接口
+        </summary>
+      </member>
         <member name="M:HaotianCloud.WebApi.Controllers.UserController.Login(HaotianCloud.WebApi.Controllers.UserController.LoginRequest)">
             <summary>
             用户登录
@@ -47,11 +52,14 @@
             域名
             </summary>
         </member>
+
+       
         <member name="P:HaotianCloud.WebApi.AuthorizeAttribute._authorize">
             <summary>
             权限名称
             </summary>
         </member>
+
         <member name="T:HaotianCloud.WebApi.AuthorizeFilterAttribute">
             <summary>
             权限验证

@@ -12,7 +12,7 @@ using HaotianCloud.Service.SystemSecurity;
 namespace HaotianCloud.WebApi.Controllers
 {
     /// <summary>
-    /// 用户接口
+    /// 用户测试接口
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]

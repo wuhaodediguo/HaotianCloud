@@ -157,7 +157,7 @@
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md8">
                     <div class="layui-row layui-col-space15">
-                        @*<div class="layui-col-md6">
+                        <div class="layui-col-md6">
                             <div class="layui-card">
                                 <div class="layui-card-header"><a href="javascript:;" layuimini-content-href="/SystemManage/QuickModule/Index" data-title="快捷入口"><i class="fa fa-credit-card icon icon-blue"></i>快捷入口</a></div>
                                 <div class="layui-card-body">
@@ -235,7 +235,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>*@
+                        </div>
                         <div class="layui-col-md12">
                             <div class="layui-card">
                                 <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
@@ -276,7 +276,7 @@
                                     </tr>
                                     <tr>
                                         <td>主要特色</td>
-                                        <td>挖掘机控制 / 响应式 / 及时 / 操作流畅</td>
+                                        <td>控制 / 响应式 / 及时 / 操作流畅</td>
                                     </tr>
                                     
                                 </tbody>
@@ -299,8 +299,8 @@
         // 公告赋值
         $(function () {
             noticeInfo();
-            //quickModuleInfo();
-            //loadInfo();
+            quickModuleInfo();
+            loadInfo();
         });
         //记录信息
         loadInfo = function () {
@@ -374,9 +374,9 @@
             });
             miniTab.listen();
             common.iframeInterval(function () {
-                //loadInfo();
+                loadInfo();
                 noticeInfo();
-                //quickModuleInfo();
+                quickModuleInfo();
             }, 30000); //指定30秒刷新一次
             /**
              * 查看公告信息
