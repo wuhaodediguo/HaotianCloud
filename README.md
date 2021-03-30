@@ -88,8 +88,8 @@
 
 开源项目不易，若此项目能得到你的青睐，可以捐赠支持作者持续开发与维护，感谢所有支持开源的朋友。
 <p align="left">
-<img src="https://gitee.com/wodediguo/haotian/blob/master/images/testfor1.jpg" height="80"/>
+<img src="http://180.130.190.32:50000/icon/testfor1.jpg" height="80"/>
 </p>
-<p align="center">
-<img src="https://gitee.com/wodediguo/haotian/blob/master/images/testfor2.jpg" height="80"/>
+<p align="left">
+<img src="http://180.130.190.32:50000/icon/testfor2.jpg" height="80"/>
 </p>
