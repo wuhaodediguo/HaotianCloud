@@ -230,7 +230,7 @@ namespace HaotianCloud.Web
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error?msg=404");
+                //app.UseExceptionHandler("/Home/Error?msg=404");
             }
             //文件地址Resource
             //静态资源wwwroot

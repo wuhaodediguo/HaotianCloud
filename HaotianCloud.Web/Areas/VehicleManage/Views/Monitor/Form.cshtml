@@ -2,6 +2,11 @@
     ViewBag.Title = "Form";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
+<style>
+    .layui-form-label{
+        width:160px;
+    }
+</style>
 <script>
     //父传子示例
     function initForm(data) {
@@ -35,30 +40,36 @@
             initControl();
             if (!!keyValue) {
                 common.ajax({
-                    url: "/VehicleManage/Monitor/GetFormJson",
+                    url: "/VehicleManage/monitor/GetFormJson",
                     dataType: "json",
                     data: { keyValue: keyValue },
                     async: false,
                     success: function (data) {
                         common.val('adminform', data);
                         var keyValue2 = $("#F_Id").val();
-                       
+                        
+                        var t11 = $("#devicetype").val();
+                        if (t11 == "RBOX_AUDIO") {
+                            
+                            $("#lab1").text("推送地址"); $("#lab2").text("源地址（5G-1CPE）");
+                            $("#lab3").text("源地址（5G-2CPE）"); $("#lab4").text("源地址（WIFI/ISM）");
+                        }
                         common.ajax({
                             dataType: "json",
                             data: { keyValue2: keyValue2 },
                             async: false,
-                            url: '/VehicleManage/Monitor/GetDetailListJson',
+                            url: '/VehicleManage/monitor/GetDetailListJson',
                             success: function (oldData) {
                                
                                 tableIns.reload({
                                     data: oldData.Result
                                 });
-
+                                
                             }
 
                         });
 
-
+                       
                     }
                 });
             }
@@ -70,9 +81,25 @@
             //此处需修改
             //绑定数据源
             //类型为下拉框时
+            
+            $("#DeviceNo").bindSelect({
+                data: top.clients.dataItems['sbbh'],
+                id: "",
+            });
+            $("#devicetype").bindSelect({
+                data: top.clients.dataItems['DevType'],
+                id: "",
+            });
            
         }
 
+        //var t1 = $("#devicetype").val();
+        //console.log("aaa1:" + t1);
+        //if (t1 == "RBOX_AUDIO") {
+        //    console.log("aaa12");
+        //    $("#lab1").val("推送地址"); $("#lab2").val("源地址（5G-1CPE）");
+        //    $("#lab3").val("源地址（5G-2CPE）"); $("#lab4").val("源地址（WIFI/ISM）");
+        //}
         //监听提交
         form.on('submit(saveBtn)', function (data) {
             var postData = data.field;
@@ -90,7 +117,7 @@
 
             if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
             common.submitForm({
-                url: "/VehicleManage/Monitor/SubmitForm2?rowsdetail=" + JSON.stringify(table.cache[layTableId], null, 2) + "&keyValue=" + keyValue,
+                url: "/VehicleManage/monitor/SubmitForm2?rowsdetail=" + JSON.stringify(table.cache[layTableId], null, 2) + "&keyValue=" + keyValue,
                 param: postData,
                 success: function () {
                     common.parentreload('data-search-btn');
@@ -297,8 +324,17 @@
         });
 
         //监听select下拉选中事件
-        form.on('select(DeviceType)', function (data) {
-           
+        form.on('select(devicetype)', function (data) {
+            var t1 = $("#devicetype").val();
+            debugger
+            if (t1 != "RBOX_AUDIO") {
+                $("#lab1").text("rtmp地址（WIFI）"); $("#lab2").text("rtmp地址映射（5GCPE）");
+                $("#lab3").text("rtsp地址（WIFI）"); $("#lab4").text("rtsp地址映射（5GCPE）");
+            }
+            else {
+                $("#lab1").text("推送地址"); $("#lab2").text("源地址（5G-1CPE）");
+                $("#lab3").text("源地址（5G-2CPE）"); $("#lab4").text("源地址（WIFI/ISM）");
+            }
             var elem = data.elem; //得到select原始DOM对象
             $(elem).prev("a[lay-event='DeviceType']").trigger("click");
         });
@@ -336,7 +372,12 @@
 
     });
 </script>
-
+<style>
+   
+    .layuimini-form > .layui-form-item .layui-form-label {
+        width: 125px !important;
+    }
+</style>
 <body>
     <div class="layuimini-container">
         <div class="layuimini-main">
@@ -344,17 +385,34 @@
                 <div class="layui-form-item ">
                     <input type="hidden" id="F_Id" name="F_Id">
                     <div class="layui-inline">
-                        <label class="layui-form-label">设备号</label>
+                        <label class="layui-form-label">所属控制器<span style="color:red">*</span></label>
                         <div class="layui-input-inline">
-                            <input type="text" id="DeviceNo" name="DeviceNo" lay-verify="required" autocomplete="off" class="layui-input">
+                            <select id="DeviceNo" name="DeviceNo" lay-filter="DeviceNo" lay-verify="required" lay-search>
+                                <option value="">请选择</option>
+                            </select>
+                            @*<input type="text" id="DeviceNo" name="DeviceNo" lay-verify="required" autocomplete="off" class="layui-input">*@
                         </div>
+
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">设备名称</label>
+                        <label class="layui-form-label">设备类型<span style="color:red">*</span></label>
                         <div class="layui-input-inline">
-                            <input type="text" id="DeviceName" name="DeviceName" lay-verify="required" autocomplete="off" class="layui-input">
+                            <select id="devicetype" name="devicetype" lay-filter="devicetype" lay-verify="required" lay-search>
+                                <option value="">请选择</option>
+                            </select>
+
                         </div>
                     </div>
+                    @*<div class="layui-inline">
+            <label class="layui-form-label">设备名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="DeviceName" name="DeviceName" lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>*@
+                    
+                </div>
+
+                <div class="layui-form-item ">
                     <div class="layui-inline">
                         <label class="layui-form-label">品牌</label>
                         <div class="layui-input-inline">
@@ -368,28 +426,25 @@
                         </div>
                     </div>
 
-                </div>
-
-                <div class="layui-form-item ">
                     <input type="hidden" id="F_Id" name="F_Id">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">长</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="devicelength" name="devicelength" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">宽</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="devicewide" name="devicewide" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">高</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="devicehigh" name="devicehigh" autocomplete="off" class="layui-input">
-                        </div>
-                    </div>
+                    @*<div class="layui-inline">
+            <label class="layui-form-label">长</label>
+            <div class="layui-input-inline">
+                <input type="text" id="devicelength" name="devicelength" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">宽</label>
+            <div class="layui-input-inline">
+                <input type="text" id="devicewide" name="devicewide" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">高</label>
+            <div class="layui-input-inline">
+                <input type="text" id="devicehigh" name="devicehigh" autocomplete="off" class="layui-input">
+            </div>
+        </div>*@
 
                 </div>
 
@@ -398,29 +453,107 @@
                     <div class="layui-form-item ">
                         <input type="hidden" id="F_Id" name="F_Id">
                         <div class="layui-inline">
-                            <label class="layui-form-label">IP地址</label>
+                            <label class="layui-form-label">IP地址（WIFI）<span style="color:red">*</span></label>
                             <div class="layui-input-inline">
-                                <input type="text" id="IPAddress" name="IPAddress" autocomplete="off" class="layui-input">
+                                <input type="text" id="IPAddress" name="IPAddress" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">端口号</label>
+                            <label class="layui-form-label">IP地址（端口映射）<span style="color:red">*</span></label>
                             <div class="layui-input-inline">
-                                <input type="text" id="port" name="port" autocomplete="off" class="layui-input">
+                                <input type="text" id="IPAddress2" name="IPAddress2" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">子网掩码</label>
+                            <label class="layui-form-label">端口号（WIFI）<span style="color:red">*</span></label>
                             <div class="layui-input-inline">
-                                <input type="text" id="Subnetmask" name="Subnetmask" autocomplete="off" class="layui-input">
+                                <input type="text" id="port" name="port" autocomplete="off" lay-verify="required" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">端口号（端口映射）<span style="color:red">*</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="port2" name="port2" autocomplete="off" lay-verify="required" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label"  id="lab1">
+                                rtmp地址
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtmpurl" name="rtmpurl" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">网关</label>
+                            <label class="layui-form-label"  id="lab2">
+                                rtmp地址映射
+                                （5GCPE）<span style="color:red">*</span>
+                            </label>
                             <div class="layui-input-inline">
-                                <input type="text" id="gateway" name="gateway" autocomplete="off" class="layui-input">
+                                <input type="text" id="rtmpurl2" name="rtmpurl2" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
                         </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label" id="lab3">
+                                rtsp地址
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl" name="rtspurl" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" id="lab4">
+                                rtsp地址映射
+                                （5GCPE）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl2" name="rtspurl2" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        @*<div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtmp地址映射
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtmpurl3" name="rtmpurl3" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtsp地址映射
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl3" name="rtspurl3"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtmp地址映射
+                                （5G-2CPE）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtmpurl4" name="rtmpurl4"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtsp地址映射
+                                （5G-2CPE）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl4" name="rtspurl4"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>*@
 
                     </div>
                 </div>
@@ -429,20 +562,20 @@
                     <div class="layui-row">
                         <label class="layui-form-label">备注</label>
                         <div class="layui-input-block">
-                            <textarea placeholder="请输入备注" id="Remark" name="Remark" class="layui-textarea" style="width:800px;"></textarea>
+                            <textarea placeholder="请输入备注" id="remark1" name="remark1" class="layui-textarea" style="width:800px;"></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div class="layui-form-item ">
+                @*<div class="layui-form-item ">
                     <div class="layui-inline" style="margin-top:5px;">
                         <label class="layui-form-label"></label>
                         <button type="button" class="layui-btn layui-btn-sm" data-type="addRow" title="添加视频通道">
                             <i class="layui-icon layui-icon-add-1"></i> 添加视频通道
                         </button>
                     </div>
-                </div>
-                <div class="layui-form-item layui-form-text">
+                </div>*@
+                @*<div class="layui-form-item layui-form-text">
 
                     <div class="layui-row">
                         <label class="layui-form-label"></label>
@@ -454,7 +587,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div>*@
 
                 <div class="layui-form-item layui-hide">
                     <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>

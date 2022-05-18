@@ -86,6 +86,7 @@
             url: "/SystemOrganize/RoleAuthorize/GetPermissionTree?v="+new Date().Format("yyyy-MM-dd hh:mm:ss"), // 使用url加载（可与data加载同时存在）
             request: { roleId: keyValue }
         });
+        
         var role;
         form.on('submit(formStep)', function (data) {
             role = data.field
@@ -99,6 +100,7 @@
             for (var i = 0; i < params.length; i++) {
                 moduleids.push(params[i].nodeId);
             }
+            debugger
             // 初始化树
             var DemoTree2 = dtree.render({
                 elem: "#demoTree2",
@@ -125,11 +127,36 @@
                     note.push(params[i].nodeId);
                 }
                 postData["permissionbuttonIds"] = String(moduleids);
-                postData["permissionfieldsIds"] = String(note);
+            postData["permissionfieldsIds"] = String(note);
+
+            var csrfToken = $('[name=__RequestVerificationToken]').val();
+            //$.ajax({
+            //    url: "/SystemOrganize/Role/SubmitForm?keyValue=" + keyValue,
+            //    data: postData,
+            //    type: "post",
+            //    dataType: "json",
+            //    headers: {
+            //        "X-CSRF-TOKEN": csrfToken
+            //    },
+            //    success: function (data) {
+            //        if (data.state == "success") {
+            //            debugger
+            //        } else {
+                        
+            //        }
+            //    },
+            //    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    
+            //    },
+                
+            //});
+
+
                 common.submitForm({
                     url: "/SystemOrganize/Role/SubmitForm?keyValue=" + keyValue,
                     param: postData,
                     success: function () {
+                        debugger
                         common.parentreload("data-search-btn");
                     }
                 })

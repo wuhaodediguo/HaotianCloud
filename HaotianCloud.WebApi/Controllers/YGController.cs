@@ -26,7 +26,7 @@ namespace HaotianCloud.WebApi.Controllers
         public static string gaodu = "123";
         public static string sudu = "45.6";
         /// <summary>
-        /// WebAPI
+        /// 车辆外型参数00取得
         /// </summary>
         [HttpGet("{keyword}")]
         public IEnumerable<string> Getvehicleshape(string keyword)
@@ -70,7 +70,7 @@ namespace HaotianCloud.WebApi.Controllers
         //[HttpPost("{obj}")]
         //public HttpResponseMessage Postvehicleshape(dynamic obj)
         //{
-            
+
         //    try
         //    {
         //        JObject jo = (JObject)JsonConvert.DeserializeObject(obj.ToString());
@@ -103,7 +103,7 @@ namespace HaotianCloud.WebApi.Controllers
         //}
 
         /// <summary>
-        /// 车辆外型参数
+        /// 车辆外型参数设置
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -139,39 +139,6 @@ namespace HaotianCloud.WebApi.Controllers
             }
 
         }
-
-        /// <summary>
-        /// 车辆外型参数
-        /// </summary>
-        /// <returns></returns>
-        //[HttpPost]
-        //public HttpResponseMessage Postvehicleshape(JObject jsonobj)
-        //{
-
-        //    try
-        //    {
-        //        //var a = Request.QueryString["gaodu"].ToString();
-        //        //JObject jo = (JObject)JsonConvert.DeserializeObject(jsonobj);
-        //        //var jsonstr = JsonConvert.SerializeObject(jsonobj);
-        //        //var jsonParams = JsonConvert.DeserializeObject<dynamic>(jsonstr);
-        //        //string changdu = jsonParams.changdu;
-
-        //        //返回json数
-        //        return new HttpResponseMessage()
-        //        {
-        //            Content = new StringContent("", Encoding.UTF8, "application/json"),
-        //        };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //返回json数
-        //        return new HttpResponseMessage()
-        //        {
-        //            Content = new StringContent("", Encoding.UTF8, "application/json"),
-        //        };
-        //    }
-
-        //}
 
 
 

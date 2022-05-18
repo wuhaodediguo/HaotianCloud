@@ -19,7 +19,7 @@
             var ids = $.request("ids");
             var rendertree = common.rendertreetable({
                 elem: '#currentTableId',
-                url: '/VehicleManage/Excavator/GetFormGridJson',
+                url: '/VehicleManage/excavator/GetFormGridJson',
                 height: 'full-60',
                 toolbar: false,//工具栏
                 search:false,
@@ -33,17 +33,18 @@
                 },
                 cols: [[
                     { type: 'checkbox' },
-                    { field: 'DeviceName', title: '名称', width: 250 },
+                    //{ field: 'DeviceName', title: '名称', width: 250 },
                     { field: 'DeviceNo', title: '编号', width: 200 },
-                    
+                    {
+                        title: '挖掘机名称', width: 120, sort: true, filter: true,
+                        templet: function (d) {
+                            return top.clients.dataItems["wjbh"][d.DeviceNo] == undefined ? "" : top.clients.dataItems["wjbh"][d.DeviceNo];
+                        }
+                    },
                     {
                         field: 'F_EnabledMark', title: '状态', width: 80,
                         templet: function (d) {
-                            if (d.F_EnabledMark == true) {
-                                return "<span class='layui-btn layui-btn-normal layui-btn-xs'>有效</span>";
-                            } else {
-                                return "<span class='layui-btn layui-btn-warm layui-btn-xs'>无效</span>";
-                            }
+                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>有效</span>";
                         }
                     }
                 ]],
@@ -57,15 +58,16 @@
             // 监听行双击事件
             treeTable.on('rowDouble(currentTableId)', function (obj) {
                 var pvalue = obj.data.F_Id;
-                var pname = obj.data.DeviceName;
+                var pname = top.clients.dataItems["wjbh"][obj.data.DeviceNo];
+                //obj.data.DeviceName;
                 var pcode = obj.data.DeviceNo;
-                common.modalConfirm("注：您确定要选择{编号：" + pcode + "，名称：" + pname + "}的数据吗？", function (r) {
+                common.modalConfirm("注：您确定要选择{编号：" + pcode + "}的数据吗？", function (r) {
                     if (r) {
                         if (!!pvalue) {
                             currentWindow.$('#' + value).val(pvalue);
                         }
                         if (!!pname) {
-                            currentWindow.$('#' + name).val(pname);
+                            currentWindow.$('#' + name).val(pcode);
                         }
                         common.modalClose();
                     }
@@ -91,9 +93,12 @@
                 var pvalue = [];
                 var pname = [];
                 var pcode = [];
+                debugger
                 for (var i = 0; i < checkStatus.length; i++) {
                     pvalue.push(checkStatus[i].F_Id);
-                    pname.push(checkStatus[i].DeviceName);
+                    //pname.push(checkStatus[i].DeviceName);
+                    pname.push(top.clients.dataItems["wjbh"][checkStatus[i].DeviceNo]);
+                    //top.clients.dataItems["wjbh"][obj.data.DeviceNo]
                     pcode.push(checkStatus[i].DeviceNo);
                 }
                 if (pvalue.length == 0) {
@@ -115,8 +120,8 @@
                             if (!!pvalue) {
                                 currentWindow.$('#' + value).val(pvalue.join(","));
                             }
-                            if (!!pname) {
-                                currentWindow.$('#' + name).val(pname.join(","));
+                            if (!!pcode) {
+                                currentWindow.$('#' + name).val(pcode.join(","));
                             }
                             common.modalClose();
                         }

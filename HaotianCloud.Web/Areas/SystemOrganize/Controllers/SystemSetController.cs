@@ -6,6 +6,7 @@ using HaotianCloud.Code;
 using HaotianCloud.Domain.SystemOrganize;
 using HaotianCloud.Service;
 using HaotianCloud.Service.SystemOrganize;
+using HaotianCloud.Service.VehicleManage;
 
 namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
 {
@@ -19,6 +20,7 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
     {
 
         public SystemSetService _service { get; set; }
+        public CockpitService _cockpitService { get; set; }
 
         #region 获取数据
         [HttpGet]
@@ -28,6 +30,15 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        //[ServiceFilter(typeof(HandlerAuthorizeAttribute))]
+        //[ServiceFilter(typeof(HandlerAdminAttribute))]
+        public virtual ActionResult SetAForm()
+        {
+            return View();
+        }
+
         [HttpGet]
         [HandlerAjaxOnly]
         [ServiceFilter(typeof(HandlerAdminAttribute))]
@@ -90,6 +101,17 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
         }
         #endregion
 
+        //
+        [HttpGet]
+        [HandlerAjaxOnly]
+        [ServiceFilter(typeof(HandlerAdminAttribute))]
+        public ActionResult GetConfigsJson(string ip)
+        {
+            var data =  _cockpitService.GetConfig(ip);
+            return Content(data.ToJson());
+        }
+
+
         #region 提交数据
         [HttpPost]
         [HandlerAjaxOnly]
@@ -118,6 +140,8 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
                 entity.F_EnabledMark = null;
                 entity.F_EndTime = null;
                 await _service.SubmitForm(entity, keyValue);
+
+                //var data = _cockpitService.updateR(entity);
                 return await Success("操作成功。", "", keyValue);
             }
             catch (Exception ex)
@@ -125,6 +149,40 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
                 return await Error(ex.Message, "", keyValue);
             }
         }
+
+        [HttpPost]
+        [HandlerAjaxOnly]
+
+        public async Task<ActionResult> SetSubmitFormA(sysconfigs entity)
+        {
+            var keyValue = _service.currentuser.CompanyId;
+            try
+            {
+                
+                var data = _cockpitService.updateR(entity);
+                return await Success("操作成功。", "", keyValue);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue);
+            }
+        }
+
+        public async Task<ActionResult> SetSubmitreboot(sysconfigs entity)
+        {
+            var keyValue = _service.currentuser.CompanyId;
+            try
+            {
+
+                var data = _cockpitService.restartRIP(entity);
+                return await Success("操作成功。", "", keyValue);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue);
+            }
+        }
+
         [HttpPost]
         [HandlerAjaxOnly]
         [ServiceFilter(typeof(HandlerAuthorizeAttribute))]

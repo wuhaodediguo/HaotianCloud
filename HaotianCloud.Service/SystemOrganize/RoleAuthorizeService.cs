@@ -132,6 +132,7 @@ namespace HaotianCloud.Service.SystemOrganize
         }
         public async Task<bool> ActionValidate(string roleId, string action,bool isAuthorize=false)
         {
+            //return true;
             var authorizeurldata = new List<AuthorizeActionModel>();
             var rolelist = roleId.Split(',');
             var user =await userApp.GetForm(currentuser.UserId);
@@ -144,6 +145,8 @@ namespace HaotianCloud.Service.SystemOrganize
             {
                 cachedata = new Dictionary<string, List<AuthorizeActionModel>>();
             }
+            cachedata = new Dictionary<string, List<AuthorizeActionModel>>();
+
             foreach (var roles in rolelist)
             {
                 if (!cachedata.ContainsKey(roles))

@@ -1,0 +1,223 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <fieldset class="table-search-fieldset" id="searchField">
+            <div>
+                <form class="layui-form layui-form-pane">
+                    <div class="layui-inline">
+                        <label >报警类型:</label>
+                        <div class="layui-input-inline">
+                            <select id="alarmtype" name="alarmtype" lay-filter="alarmtype" lay-search>
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                        <label >报警时间:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="StartTime" name="StartTime" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" id="EndTime" name="EndTime" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+       
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+       
+    </div>
+</div>
+
+
+
+<script>
+
+    layui.use(['jquery', 'form', 'table', 'commonTable', 'laydate',  'common', 'optimizeSelectOption'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            commonTable = layui.commonTable,
+            laydate = layui.laydate,
+        common = layui.common;
+
+        laydate.render({
+            elem: '#StartTime'
+            , btns: ['clear', 'now']
+            , trigger: 'click',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+        laydate.render({
+            elem: '#EndTime'
+            , btns: ['clear', 'now']
+            , trigger: 'click',
+            format: 'yyyy-MM-dd HH:mm:ss',
+        });
+        //权限控制(js是值传递)
+        wcLoading.close();
+        var keyValue = $.request("keyValue");
+        if (keyValue == "null") {
+            keyValue = "";
+        }
+        $("#alarmtype").bindSelect({
+            data: top.clients.dataItems['alarmtype'],
+            id: "",
+        });
+
+        commonTable.rendertable({
+            elem: '#currentTableId',
+            id: 'currentTableId',
+            url: '/VehicleManage/excavator/GetWJJFormJson2?keyValue=' + keyValue,
+            filter: {
+                clearFilter: false,
+            },
+            cols: [[
+                { field: 'wjj', title: '编号', width: 90, },
+                {
+                    field: 'lead_switch_on', title: '先导', width: 50, templet: function (d) {
+                        if (d.lead_switch_on == "0") {
+                            return '<span style="color: green">' + "关" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: blue">' + "开" + '</span>';
+                        }
+
+                    }
+                },
+                { field: 'rpm', title: '转速', width: 60, },
+                { field: 'gear', title: '档位', width: 60, },
+
+                {
+                    field: 'rpy_yaw', title: 'RPY', width: 110, templet: function (d) {
+                        return d.rpy_roll + "°" + "，" + d.rpy_pitch + "°" + "，" + d.rpy_yaw + "°";
+                    }
+                },
+                {
+                    field: 'rpy_roll', title: '横滚角度', width: 70, templet: function (d) {
+                        if (d.rpy_roll != "" && Number(d.rpy_roll) >= 35) {
+                            return '<span style="color: red">' + "三级报警(" + d.rpy_roll + "°)" + '</span>';
+                        }
+                        else if (d.rpy_roll != "" && Number(d.rpy_roll) >= 30 && Number(d.rpy_roll) < 35) {
+                            return '<span style="color: yellow">' + "二级报警(" + d.rpy_roll + "°)" + '</span>';
+                        }
+                        else if (d.rpy_roll != "" && Number(d.rpy_roll) > 20 && Number(d.rpy_roll) < 30) {
+                            return '<span style="color: #02C874">' + "一级报警(" + d.rpy_roll + "°)" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.rpy_roll + "°" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'rpy_pitch', title: '俯仰角度', minWidth: 70, templet: function (d) {
+                        if (d.rpy_pitch != "" && Number(d.rpy_pitch) >= 20) {
+                            return '<span style="color: red">' + "三级报警(" + d.rpy_pitch + "°)" + '</span>';
+                        }
+                        else if (d.rpy_pitch != "" && Number(d.rpy_pitch) >= 15 && Number(d.rpy_pitch) < 20) {
+                            return '<span style="color: yellow">' + "二级报警(" + d.rpy_pitch + "°)" + '</span>';
+                        }
+                        else if (d.rpy_pitch != "" && Number(d.rpy_pitch) > 10 && Number(d.rpy_pitch) < 15) {
+                            return '<span style="color: #02C874">' + "一级报警(" + d.rpy_pitch + "°)" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.rpy_roll + "°" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'oil_pressure', title: '油压', width: 70, templet: function (d) {
+                        if (d.oil_pressure != "" && Number(d.oil_pressure) < 48) {
+                            return '<span style="color: red">' + d.oil_pressure + "Kpa" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.oil_pressure + "Kpa" + '</span>';
+                        }
+
+                    }
+                },
+                {
+                    field: 'oil_position', title: '油位', width: 60, templet: function (d) {
+                        if (d.oil_pressure != "" && Number(d.oil_pressure) < 2) {
+                            return '<span style="color: red">' + d.oil_position + "%" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.oil_position + "%" + '</span>';
+                        }
+
+                    }
+                },
+                {
+                    field: 'oil_temperature', title: '油温', width: 60, templet: function (d) {
+                        if (d.oil_pressure_alarm == "1") {
+                            return '<span style="color: red">' + d.oil_temperature + "℃" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.water_temperature + "℃" + '</span>';
+                        }
+
+                    }
+                },
+
+                {
+                    field: 'water_temperature', title: '水温', width: 60, templet: function (d) {
+                        if (d.water_temperature_alarm == "1") {
+                            return '<span style="color: red">' + d.water_temperature + "℃" + '</span>';
+                        }
+                        else {
+                            return '<span style="color: green">' + d.oil_temperature + "℃" + '</span>';
+                        }
+
+                    }
+                },
+                //{
+                //    field: 'water_temperature_alarm', title: '水温报警', width: 70, templet: function (d) {
+
+                //        if (d.water_temperature_alarm == "0") {
+                //            return '<span style="color: red">'+ d.water_temperature_alarm + '</span>';
+                //        }
+                //        else {
+                //            return d.water_temperature_alarm;
+                //        }
+                //    }
+                //},
+                //{ field: 'oil_pressure_alarm', title: '油压报警', width: 70, },
+                { field: 'oil_filter_blocked', title: '油滤报警', width: 70, },
+                { field: 'air_filter_blocked', title: '空滤报警', width: 70, },
+                {
+                    field: 'high_speed_mode', title: '高速模式', width: 70, templet: function (d) {
+                        if (d.high_speed_mode == "0") {
+                            return "否";
+                        }
+                        else {
+                            return "是";
+                        }
+
+                    }
+                },
+
+                { field: 'F_CreatorTime', title: '创建时间', width: 150, },
+
+            ]]
+        });
+        form.render();
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            //执行搜索重载
+            commonTable.reloadtable({
+                elem: 'currentTableId',
+                curr: 1,
+                where: { keyword: data.field.alarmtype, StartTime: data.field.StartTime, EndTime: data.field.EndTime }
+            });
+            return false;
+        });
+
+    });
+
+</script>
+

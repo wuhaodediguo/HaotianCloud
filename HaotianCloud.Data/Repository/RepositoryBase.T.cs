@@ -148,25 +148,29 @@ namespace HaotianCloud.DataBase
         }
         public async Task<List<TEntity>> CheckCacheList(string cacheKey, long old = 0)
         {
-            var cachedata =await CacheHelper.Get<List<TEntity>>(cacheKey);
-            if (cachedata == null || cachedata.Count() == 0)
-            {
-                cachedata = _context.Query<TEntity>().ToList();
-                await CacheHelper.Set(cacheKey, cachedata);
-            }
+            //var cachedata =await CacheHelper.Get<List<TEntity>>(cacheKey);
+            //if (cachedata == null || cachedata.Count() == 0)
+            //{
+            //    cachedata = _context.Query<TEntity>().ToList();
+            //    await CacheHelper.Set(cacheKey, cachedata);
+            //}
+            //去除redis
+            var cachedata =  _context.Query<TEntity>().ToList();
             return cachedata;
         }
         public async Task<TEntity> CheckCache(string cacheKey, object keyValue, long old = 0)
         {
-            var cachedata = await CacheHelper.Get<TEntity>(cacheKey + keyValue);
-            if (cachedata == null)
-            {
-                cachedata = await _context.QueryByKeyAsync<TEntity>(keyValue);
-                if (cachedata != null)
-                {
-                    await CacheHelper.Set(cacheKey + keyValue, cachedata);
-                }
-            }
+            //var cachedata = await CacheHelper.Get<TEntity>(cacheKey + keyValue);
+            //if (cachedata == null)
+            //{
+            //    cachedata = await _context.QueryByKeyAsync<TEntity>(keyValue);
+            //    if (cachedata != null)
+            //    {
+            //        await CacheHelper.Set(cacheKey + keyValue, cachedata);
+            //    }
+            //}
+            //去除redis
+            var cachedata = await _context.QueryByKeyAsync<TEntity>(keyValue);
             return cachedata;
         }
     }

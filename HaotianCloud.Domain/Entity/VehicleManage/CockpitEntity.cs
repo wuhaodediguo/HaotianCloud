@@ -9,7 +9,7 @@ namespace HaotianCloud.Domain.VehicleManage
     /// 日 期：2020-06-09 19:42
     /// 描 述：驾驶舱管理实体类
     /// </summary>
-    [TableAttribute("Cockpit_info")]
+    [TableAttribute("cockpit_info")]
     public class CockpitEntity : IEntity<CockpitEntity>,ICreationAudited,IModificationAudited,IDeleteAudited
     {
         /// <summary>
@@ -53,10 +53,14 @@ namespace HaotianCloud.Domain.VehicleManage
         public string monitorID { get; set; } //遥控控制器ID
 
         public string excavatorID { get; set; } //挖掘机
+        public string Networkmode { get; set; } //网络模式
 
         [NotMapped]
         //多选显示字段 挖掘机
         public string excavatorName { get; set; }
+        [NotMapped]
+        //多选显示字段 挖掘机
+        public string MonitorName { get; set; }
 
         /// <summary>
         /// 是否启用

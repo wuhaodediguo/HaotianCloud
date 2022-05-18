@@ -45,6 +45,7 @@ namespace HaotianCloud.Code
             sb.AppendLine("ContentRootPath:" + env.ContentRootPath);
             sb.AppendLine("WebRootPath:" + env.WebRootPath);
             sb.AppendLine("IsDevelopment:" + env.IsDevelopment());
+            sb.AppendLine("startURL:" + "http://[::]:5005/api-doc/index.html");
             LogHelper.WriteWithTime(sb.ToString());
         }
 

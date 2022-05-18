@@ -28,7 +28,7 @@ namespace HaotianCloud.Domain.SystemOrganize
         /// Logo编号
         /// </summary>
         /// <returns></returns>
-        [Required(ErrorMessage = "Logo编号不能为空")]
+        //[Required(ErrorMessage = "Logo编号不能为空")]
         public string F_LogoCode { get; set; }
         /// <summary>
         /// 项目名称
@@ -129,5 +129,84 @@ namespace HaotianCloud.Domain.SystemOrganize
         public string F_DBProvider { get; set; }
         [Required(ErrorMessage = "域名不能为空")]
         public string F_HostUrl { get; set; }
+
+
+        //
+       
+        public string audioEnable { get; set; }
+        public string http_flv_enable { get; set; }
+        public string http_flv_uri { get; set; }
+        public string http_hls_enable { get; set; }
+        public string http_hls_uri { get; set; }
+        public string http_ts_enable { get; set; }
+        public string http_ts_uri { get; set; }
+        public string live_enable { get; set; }
+        public string live_publish_url { get; set; }
+        public string multicast_enable { get; set; }
+        public string multicast_ip { get; set; }
+        public string multicast_port { get; set; }
+        public string recordEnable { get; set; }
+        public string ts_pid { get; set; }
+        public string venc_codec { get; set; }
+
+        public string rtmp_publish_auto_stop { get; set; }
+        public string rtmp_publish_enable_write { get; set; }
+        public string rtmp_publish_stop_port { get; set; }
+        public string rtmp_publish_stop_url { get; set; }
+        public string transcodeEnable { get; set; }
+        [NotMapped]
+        public string tongdaolist { get; set; }
+
+        [NotMapped]
+        public string rtmp_enable { get; set; }
+        [NotMapped]
+        public string rtmp_publish_uri { get; set; }
+        [NotMapped]
+        public string rtsp_enable { get; set; }
+        [NotMapped]
+        public string rtsp_password { get; set; }
+        [NotMapped]
+        public string rtsp_uri { get; set; }
+        [NotMapped]
+        public string rtsp_username { get; set; }
+
+        [NotMapped]
+        public string adminkey { get; set; }
+
+
+
+
+
+
     }
+
+    public class sysconfigs
+    {
+        [NotMapped]
+        public string tongdaolist { get; set; }
+
+        [NotMapped]
+        public string rtmp_enable { get; set; }
+        [NotMapped]
+        public string rtmp_publish_uri { get; set; }
+        [NotMapped]
+        public string rtsp_enable { get; set; }
+        [NotMapped]
+        public string rtsp_password { get; set; }
+        [NotMapped]
+        public string rtsp_uri { get; set; }
+        [NotMapped]
+        public string rtsp_username { get; set; }
+
+        [NotMapped]
+        public string adminkey { get; set; }
+        [NotMapped]
+        public string adminkey1 { get; set; }
+        [NotMapped]
+        public string IPaddress { get; set; }
+        [NotMapped]
+        public string NewIPaddress { get; set; }
+    }
+
+   
 }

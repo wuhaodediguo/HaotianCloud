@@ -254,6 +254,7 @@ layui.define(["jquery", "layer", 'table', 'treeTable',  'xmSelect', 'miniTab'], 
                 var index = parent.layer.load(0, {
                     shade: [0.5, '#000'], //0.1透明度的背景
                 });
+                debugger
                 $.ajax({
                     url: options.url,
                     data: options.param,
@@ -543,28 +544,37 @@ layui.define(["jquery", "layer", 'table', 'treeTable',  'xmSelect', 'miniTab'], 
                 return returnhtml;
             }
             var dataJson = top.clients.authorizeButton[moduleId.split("?")[0]];
+            
             if (innerHTML.indexOf('</button>') > -1) {
                 var tempList = innerHTML.split('</button>');
+                
                 for (var i = 0; i < tempList.length; i++) {
+                    
                     if (tempList[i].indexOf('<button ') > -1) {
                         var itemList = tempList[i].split('<button ');
                         returnhtml = returnhtml + itemList[0];
+                        
                         if (itemList[1].indexOf(' authorize') == -1) {
+                            
                             returnhtml = returnhtml + '<button ' + itemList[1] + '</button>';
                         }
                         else if (dataJson != undefined) {
                             $.each(dataJson, function (i) {
+                                
                                 if (itemList[1].indexOf('id="' + dataJson[i].F_EnCode + '"') > -1) {
                                     returnhtml = returnhtml + '<button ' + itemList[1] + '</button>';
                                     return false;
                                 }
                             });
                         }
-                        if (itemList.length>2) {
+                        
+                        if (itemList.length > 2) {
+                            
                             returnhtml = returnhtml + itemList[2];
                         }
                     }
                     else {
+                        
                         returnhtml = returnhtml + tempList[i];
                     }
                 }
@@ -656,6 +666,7 @@ layui.define(["jquery", "layer", 'table', 'treeTable',  'xmSelect', 'miniTab'], 
             //没有就全清
             if (!top.clients || !top.clients.moduleFields) {
                 element.find('input,select,textarea').each(function (r) {
+                    debugger
                     $this.parent().parent().remove();
                 });
                 return false;

@@ -9,7 +9,7 @@ namespace HaotianCloud.Domain.VehicleManage
     /// 日 期：2020-06-09 19:42
     /// 描 述：挖掘机管理实体类
     /// </summary>
-    [TableAttribute("Excavator_info")]
+    [TableAttribute("excavator_info")]
     public class ExcavatorEntity : IEntity<ExcavatorEntity>,ICreationAudited,IModificationAudited,IDeleteAudited
     {
         /// <summary>
@@ -51,8 +51,18 @@ namespace HaotianCloud.Domain.VehicleManage
         public string remark1 { get; set; } //备用1
 
         public string monitorID { get; set; } //遥控控制器ID
+        [NotMapped]
+        //多选显示字段 设备
+        public string monitorName { get; set; }
 
-        
+        public string IPAddress { get; set; }
+
+        public int port { get; set; } = 0;
+        public string IPAddress2 { get; set; }
+
+        public int port2 { get; set; } = 0;
+        public string Subnetmask { get; set; } //子网掩码
+        public string gateway { get; set; } //网关
         /// <summary>
         /// 是否启用
         /// </summary>

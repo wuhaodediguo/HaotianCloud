@@ -157,7 +157,7 @@
             <div class="layui-row layui-col-space15">
                 <div class="layui-col-md8">
                     <div class="layui-row layui-col-space15">
-                        <div class="layui-col-md6">
+                        @*<div class="layui-col-md6">
                             <div class="layui-card">
                                 <div class="layui-card-header"><a href="javascript:;" layuimini-content-href="/SystemManage/QuickModule/Index" data-title="快捷入口"><i class="fa fa-credit-card icon icon-blue"></i>快捷入口</a></div>
                                 <div class="layui-card-body">
@@ -168,8 +168,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="layui-col-md6">
+                        </div>*@
+                        @*<div class="layui-col-md6">
                             <div class="layui-card">
                                 <div class="layui-card-header"><i class="fa fa-warning icon"></i>数据统计</div>
                                 <div class="layui-card-body">
@@ -235,7 +235,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                         <div class="layui-col-md12">
                             <div class="layui-card">
                                 <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
@@ -247,7 +247,7 @@
                     </div>
                 </div>
 
-                <div class="layui-col-md4">
+                @*<div class="layui-col-md4">
 
                     <div class="layui-card">
                         <div class="layui-card-header"><i class="fa fa-bullhorn icon icon-tip"></i>系统公告</div>
@@ -288,7 +288,7 @@
                        
                     </div>
 
-                </div>
+                </div>*@
             </div>
         </div>
     </div>
@@ -298,9 +298,9 @@
     <script>
         // 公告赋值
         $(function () {
-            noticeInfo();
-            quickModuleInfo();
-            loadInfo();
+            //noticeInfo();
+            //quickModuleInfo();
+            //loadInfo();
         });
         //记录信息
         loadInfo = function () {
@@ -373,34 +373,34 @@
                 loadChart();
             });
             miniTab.listen();
-            common.iframeInterval(function () {
-                loadInfo();
-                noticeInfo();
-                quickModuleInfo();
-            }, 30000); //指定30秒刷新一次
-            /**
-             * 查看公告信息
-             **/
-            $('body').on('click', '.layuimini-notice', function () {
-                var title = $(this).children('.layuimini-notice-title').text(),
-                    noticeTime = $(this).children('.layuimini-notice-extra').text(),
-                    content = $(this).children('.layuimini-notice-content').html();
-                var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
-                    '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
-                    '<div style="font-size: 12px">' + content + '</div>\n' +
-                    '</div>\n';
-                parent.layer.open({
-                    type: 1,
-                    title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">' + noticeTime + '</span>',
-                    area: '300px;',
-                    shade: 0.8,
-                    id: 'layuimini-notice',
-                    btn: ['确定'],
-                    btnAlign: 'c',
-                    moveType: 1,
-                    content: html
-                });
-            });
+            //common.iframeInterval(function () {
+            //    loadInfo();
+            //    noticeInfo();
+            //    quickModuleInfo();
+            //}, 30000); //指定30秒刷新一次
+            ///**
+            // * 查看公告信息
+            // **/
+            //$('body').on('click', '.layuimini-notice', function () {
+            //    var title = $(this).children('.layuimini-notice-title').text(),
+            //        noticeTime = $(this).children('.layuimini-notice-extra').text(),
+            //        content = $(this).children('.layuimini-notice-content').html();
+            //    var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
+            //        '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
+            //        '<div style="font-size: 12px">' + content + '</div>\n' +
+            //        '</div>\n';
+            //    parent.layer.open({
+            //        type: 1,
+            //        title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">' + noticeTime + '</span>',
+            //        area: '300px;',
+            //        shade: 0.8,
+            //        id: 'layuimini-notice',
+            //        btn: ['确定'],
+            //        btnAlign: 'c',
+            //        moveType: 1,
+            //        content: html
+            //    });
+            //});
 
             /**
              * 报表功能

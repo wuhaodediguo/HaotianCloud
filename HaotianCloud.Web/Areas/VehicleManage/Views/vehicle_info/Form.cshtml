@@ -1,0 +1,430 @@
+﻿@{
+    ViewBag.Title = "Form"; 
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common','optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        //权限字段
+        common.authorizeFields('adminform');
+        //此处需修改
+        //类型为时间时
+        //laydate.render({
+            //elem: '#F_Birthday'
+            //, btns: ['clear', 'now']
+            //, trigger: 'click',
+            //format: 'yyyy-MM-dd',
+        //});
+
+        $(function () {
+            initControl();
+            if (!!keyValue) {
+                 common.ajax({
+                   url: '/VehicleManage/vehicle_info/GetFormJson',
+                   dataType: 'json',
+                   data: { keyValue: keyValue },
+                   async: false,
+                   success: function (data) {
+                       common.val('adminform', data);
+                    }
+               });
+           }
+           form.render();
+       });
+       wcLoading.close();
+
+        function initControl() {
+            $("#CompanyID").bindSelect({
+                url: "/SystemOrganize/Organize/GetListJson",
+                id: "F_Id",
+                text: "F_FullName"
+            });
+            debugger
+            $("#DevType").bindSelect({
+                data: top.clients.dataItems['DevType'],
+                id: "",
+            });
+            $("#UseStatus").bindSelect({
+                data: top.clients.dataItems['UseStatus'],
+                id: "",
+            });
+            $("#PlateType").bindSelect({
+                data: top.clients.dataItems['PlateType'],
+                id: "",
+            });
+            $("#VehiType").bindSelect({
+                data: top.clients.dataItems['VehiType'],
+                id: "",
+            });
+            
+        }
+        //select验证
+        form.verify({
+            required: function (value, item) {
+                var msg = "必填项不能为空";
+                value = $.trim(value);
+                var isEmpty = !value || value.length < 1;
+                // 当前验证元素是select且为空时,将页面定位至layui渲染的select处，或自定义想定位的位置
+                if (item.tagName == 'SELECT' && isEmpty) {
+                    $("html").animate({
+                        scrollTop: $(item).siblings(".layui-form-select").offset().top - 74
+                    }, 50);
+                }
+                if (isEmpty) {
+                    return msg;
+                }
+            }
+        });
+
+       //监听提交
+       form.on('submit(saveBtn)', function (data) {
+           var postData = data.field;
+           common.submitForm({
+               url: '/VehicleManage/vehicle_info/SubmitForm?keyValue=' + keyValue,
+               param: postData,
+               success: function () {
+                   common.parentreload('data-search-btn');
+               }
+           })
+           return false;
+       });
+   });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">车牌号,唯一标识</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="VehiIDNO" name="VehiIDNO" autocomplete="off" lay-verify="required" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">所属公司ID</label>
+                        <div class="layui-input-block">
+                            <select id="CompanyID" name="CompanyID" lay-verify="required" lay-search>
+                            </select>
+                        </div>
+                    </div>
+
+                    @*<div class="layui-input-block">
+                <input type="text" id="CompanyID" name="CompanyID" autocomplete="off" lay-verify="required" placeholder="请输入" class="layui-input">
+            </div>*@
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">车辆类型</label>
+                        <div class="layui-input-block">
+                            <select id="VehiType" name="VehiType" lay-verify="required" lay-search>
+                            </select>
+                        </div>
+                       
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备类型</label>
+                        <div class="layui-input-block">
+                            <select id="DevType" name="DevType" lay-verify="required" lay-search>
+                            </select>
+
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">使用状态</label>
+                        <div class="layui-input-block">
+                            <select id="UseStatus" name="UseStatus" lay-verify="required" lay-search>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">车牌类型</label>
+                        <div class="layui-input-block">
+                            <select id="PlateType" name="PlateType" lay-verify="required" lay-search>
+                            </select>
+
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆品牌</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="VehiBand" name="VehiBand" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆颜色</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="VehiColor" name="VehiColor" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆用途</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="VehiUse" name="VehiUse" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">司机ID,关联司机表</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DriverId" name="DriverId" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">生产日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DateProduct" name="DateProduct" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">图标类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Icon" name="Icon" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">通道数目</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="ChnCount" name="ChnCount" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">通道名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="ChnName" name="ChnName" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">IO输入的数目</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="IOInCount" name="IOInCount" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">IO输入名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="IOInName" name="IOInName" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">IO输出的数目</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="IOOutCount" name="IOOutCount" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">IO输出名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="IOOutName" name="IOOutName" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">温度传感器个数</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="TempCount" name="TempCount" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">温度传感器名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="TempName" name="TempName" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">外设参数属性</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Module" name="Module" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">是否启用缴费功能</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PayEnable" name="PayEnable" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">合约开始日</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PayBegin" name="PayBegin" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">合约期限（以月为单位）</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PayPeriod" name="PayPeriod" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">已付费</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PayMonth" name="PayMonth" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">宽限天数</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="PayDelayDay" name="PayDelayDay" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">存储天数</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="StoDay" name="StoDay" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">更新时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="UpdateTime" name="UpdateTime" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">保险失效日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SafeEndDate" name="SafeEndDate" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">行驶证编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DrivingNum" name="DrivingNum" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">行驶证到期时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DrivingEndDate" name="DrivingEndDate" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">运营证编号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="OperatingNum" name="OperatingNum" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">运营证到期时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="OperatingEndDate" name="OperatingEndDate" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">安装日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="InstallTime" name="InstallTime" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆简称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Abbreviation" name="Abbreviation" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">载重</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Loading" name="Loading" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">更多内容ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="MoreInfoID" name="MoreInfoID" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆等级</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="VehicleGrade" name="VehicleGrade" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">备注</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Remark" name="Remark" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">车辆自定义菜单</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="CustomizeMenu" name="CustomizeMenu" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">公众号ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="WxOpenid" name="WxOpenid" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                   <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">体积</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="transport_volume" name="transport_volume" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+
+                </div>
+
+
+
+
+
+               
+               
+               <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+            </div>
+    </div>
+</body>
+

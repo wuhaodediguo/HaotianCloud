@@ -1,0 +1,211 @@
+﻿@{
+    ViewBag.Title = "Form"; 
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common','optimizeSelectOption'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        //权限字段
+        common.authorizeFields('adminform');
+        //此处需修改
+        //类型为时间时
+        //laydate.render({
+            //elem: '#F_Birthday'
+            //, btns: ['clear', 'now']
+            //, trigger: 'click',
+            //format: 'yyyy-MM-dd',
+        //});
+
+        $(function () {
+            initControl();
+            if (!!keyValue) {
+                 common.ajax({
+                   url: '/VehicleManage/Device_info/GetFormJson',
+                   dataType: 'json',
+                   data: { keyValue: keyValue },
+                   async: false,
+                   success: function (data) {
+                       common.val('adminform', data);
+                    }
+               });
+           }
+           form.render();
+       });
+       wcLoading.close();
+
+       function initControl() {
+           //此处需修改
+           //绑定数据源
+           //类型为下拉框时
+       }
+
+       //监听提交
+       form.on('submit(saveBtn)', function (data) {
+           var postData = data.field;
+           common.submitForm({
+               url: '/VehicleManage/Device_info/SubmitForm?keyValue=' + keyValue,
+               param: postData,
+               success: function () {
+                   common.parentreload('data-search-btn');
+               }
+           })
+           return false;
+       });
+   });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备编号,唯一标识</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevIDNO" name="DevIDNO" autocomplete="off" lay-verify="required" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">SIM卡号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SimCard" name="SimCard" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">产品品牌</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Brand" name="Brand" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">软件版本</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SoftwareVer" name="SoftwareVer" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">产品商家</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Factory" name="Factory" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">设备子类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevSubType" name="DevSubType" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">硬盘类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DiskType" name="DiskType" autocomplete="off" placeholder="1 SD，2 硬盘，3 SSD" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">备注</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Remark" name="Remark" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">厂家类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="FactoryType" name="FactoryType" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Password" name="Password" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                      
+                       <div class="layui-form-item">
+                    
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">所属公司ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="CompanyID" name="CompanyID" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">设备序列号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SerialID" name="SerialID" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">设备型号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Model" name="Model" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">硬件版本</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="HardwareVer" name="HardwareVer" autocomplete="off"  placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">设备类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevType" name="DevType" autocomplete="off" placeholder="0为其他,1部标机,2北斗终端,3视频终端" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       
+                       
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">是否启用</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="UseStatus"  id="UseStatus" checked="" value="true" title="是否启用">
+                            @*<input type="text" id="UseStatus" name="UseStatus" autocomplete="off" lay-verify="required" placeholder=" 0 启用 1禁用" class="layui-input">*@
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">协议类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="ProtocolType" name="ProtocolType" autocomplete="off"  placeholder="0未知、1 808GPS， 2 .808视频" class="layui-input">
+                        </div>
+                    </div>
+                       </div>
+                       <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">摄像头数目 </label>
+                        <div class="layui-input-block">
+                            <input type="text" id="CameraNumber" name="CameraNumber" autocomplete="off" placeholder="请输入" class="layui-input">
+                        </div>
+                    </div>
+                    
+                       </div>
+                       
+                       <div class="layui-form-item">
+                    
+                <div class="layui-form-item layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+</body>
+

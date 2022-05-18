@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Quartz" Version="3.2.4" />
+    <PackageReference Include="RestSharp" Version="106.15.0" />
   </ItemGroup>
 
   <ItemGroup>

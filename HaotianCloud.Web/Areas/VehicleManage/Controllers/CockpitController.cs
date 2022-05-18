@@ -8,6 +8,7 @@ using HaotianCloud.Service.VehicleManage;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using HaotianCloud.Domain.SystemOrganize;
 
 namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
 {
@@ -17,14 +18,15 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
     /// 描 述：控制器类
     /// </summary>
     [Area("VehicleManage")]
-    [AllowAnonymous]
-    public class CockpitController :  ControllerBase
+    //[AllowAnonymous]
+    public class cockpitController :  ControllerBase
     {
 
         //属性注入示例
         public CockpitService _service { get; set; }
         public Cockpit_excavator_relationService _service2 { get; set; }
         public ExcavatorService _excavatorService { get; set; }
+        public MonitorService _monitorService { get; set; }
         #region 获取数据
         [HttpGet]
         [HandlerAjaxOnly]
@@ -32,7 +34,7 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         {
             //此处需修改
             pagination.order = "desc";
-            pagination.sort = "F_CreatorTime desc";
+            pagination.sort = "DeviceNo desc";
             var data = await _service.GetLookList(pagination,keyword);
             return Success(pagination.records, data);
         }
@@ -77,10 +79,23 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
                     var temp = await _excavatorService.GetForm(item);
                     if (temp != null)
                     {
-                        str.Add(temp.DeviceName);
+                        str.Add(temp.DeviceNo);
                     }
                 }
                 data.excavatorName = string.Join("  ", str.ToArray());
+            }
+            if (!string.IsNullOrEmpty(data.monitorID))
+            {
+                List<string> str = new List<string>();
+                foreach (var item in data.monitorID.Split(','))
+                {
+                    var temp = await _monitorService.GetForm(item);
+                    if (temp != null)
+                    {
+                        str.Add(temp.devicetype);
+                    }
+                }
+                data.MonitorName = string.Join("  ", str.ToArray());
             }
             return Content(data.ToJson());
         }
@@ -94,7 +109,136 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
             try
             {
                 await _service.SubmitForm(entity, keyValue);
+                try
+                {
+                    var Fid = entity.monitorID.Split(',');
+                    for (int k = 0; k < Fid.Length;k++)
+                    {
+                        if (Fid[k] == "") {
+                            continue;
+                        }
+                        var temp = await _monitorService.FindList(Fid[k]);
+                        foreach (var item in temp)
+                        {
+                            if (item.devicetype.Contains("VIDEO") || item.devicetype.Contains("AUDIO"))
+                            {
+                                sysconfigs temps = new sysconfigs();
+                                temps.tongdaolist = "1";
+                                temps.rtmp_enable = "1";
+                                temps.rtsp_enable = "1";
+
+                                temps.adminkey = "f6fdffe48c908deb0f4c3bd36c032e72";
+                                if (entity.Networkmode.ToLower().Contains("5g-1"))
+                                {
+                                    temps.IPaddress = item.IPAddress;
+                                    temps.NewIPaddress = item.IPAddress2;
+                                    temps.rtsp_uri = item.rtspurl2;
+                                    temps.rtmp_publish_uri = item.rtmpurl2;
+                                }
+                                else
+                                {
+                                    temps.IPaddress = item.IPAddress2;
+                                    temps.NewIPaddress = item.IPAddress;
+                                    temps.rtsp_uri = item.rtspurl;
+                                    temps.rtmp_publish_uri = item.rtmpurl;
+
+                                }
+                                _service.updateRIP(temps);
+                            }
+                        }
+                        //var temp = await _monitorService.GetForm(Fid[k]);
+                        
+                    }
+                    
+
+                    return await Success("操作成功。", "", keyValue);
+                }
+                catch (Exception ex)
+                {
+                    
+                }
                 return await Success("操作成功。","",keyValue);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue);
+            }
+        }
+
+        
+        [HttpGet]
+        public async Task<ActionResult> SubmitForm3(string keyValue, string network)
+        {
+            var message = "";
+            try
+            {
+
+                var data = await _service.GetForm(keyValue);
+                if (data != null)
+                {
+                    var temp = await _monitorService.FindList(data.monitorID);
+                    foreach (var item in temp)
+                    {
+                        if (item.devicetype.Contains("VIDEO") || item.devicetype.Contains("AUDIO"))
+                        {
+                            sysconfigs temps = new sysconfigs();
+                            temps.tongdaolist = "1";
+                            temps.rtmp_enable = "1";
+                            temps.rtsp_enable = "1";
+                            var mess = "";
+                            temps.adminkey = "f6fdffe48c908deb0f4c3bd36c032e72";
+                            //if (data.Networkmode.ToLower().Contains("5g"))
+                            if (network.ToLower().Contains("5g-1"))
+                            {
+                                temps.IPaddress = item.IPAddress;
+                                temps.NewIPaddress = item.IPAddress2;
+                                
+                                mess = "设备：" + item.devicetype + ",IP地址：" + temps.IPaddress + "修改为" + temps.NewIPaddress;
+                            }
+                            else
+                            {
+                                temps.IPaddress = item.IPAddress2;
+                                temps.NewIPaddress = item.IPAddress;
+                               
+                                mess = "设备：" + item.devicetype + ",IP地址：" + temps.IPaddress + "修改为" + temps.NewIPaddress;
+                            }
+                            if (item.devicetype.Contains("AUDIO") && network.ToLower().Contains("5g-1"))
+                            {
+                                temps.rtmp_publish_uri = item.rtmpurl2;//源地址（5G-1CPE）
+                            }
+                            else if (item.devicetype.Contains("AUDIO") && network.ToLower().Contains("5g-2"))
+                            {
+                                temps.rtmp_publish_uri = item.rtspurl;//源地址（5G-2CPE）
+                            }
+                            else if (item.devicetype.Contains("AUDIO") && !network.ToLower().Contains("5g"))
+                            {
+                                temps.rtmp_publish_uri = item.rtspurl2;//源地址（WIFI/ISM）
+                            }
+                            else if (network.ToLower().Contains("5g-1"))
+                            {
+                                temps.rtsp_uri = item.rtspurl2;
+                                temps.rtmp_publish_uri = item.rtmpurl2;
+                            }
+                            else
+                            {
+                                temps.rtsp_uri = item.rtspurl;
+                                temps.rtmp_publish_uri = item.rtmpurl;
+                            }
+                            var t1 = _service.updateRIP(temps);
+                            if (t1 =="error" || t1 == "1")
+                            {
+                                message += mess + "失败\r\n";
+                            }
+                            else {
+                                message += mess + "成功\r\n";
+                            }
+                        }
+                    }
+
+
+                }
+
+                return await Success(message,"","");
             }
             catch (Exception ex)
             {
@@ -207,5 +351,37 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
             }
         }
         #endregion
+
+
+        //
+        [HttpPost]
+        public async Task<ActionResult> Restart(string keyValue, int status)
+        {
+            try
+            {
+                var data = await _service.GetForm(keyValue);
+                var temp02 = await _monitorService.FindList(data.monitorID);
+                foreach (var temp2 in temp02)
+                {
+                    sysconfigs t1 = new sysconfigs();
+                    t1.adminkey = "f6fdffe48c908deb0f4c3bd36c032e72";
+                    t1.tongdaolist = "1";
+                    t1.IPaddress = temp2.IPAddress;
+                    if (data.Networkmode.ToLower().Contains("5g-1"))
+                    {
+                        t1.IPaddress = temp2.IPAddress2;
+                    }
+                    var data2 = _service.restartRIP(t1);
+                }
+                //_service.updateRIP(data.monitorID);
+                return await Success("操作成功。", "", keyValue);
+            }
+            catch (Exception ex)
+            {
+                return await Error(ex.Message, "", keyValue);
+            }
+        }
+       
+
     }
 }

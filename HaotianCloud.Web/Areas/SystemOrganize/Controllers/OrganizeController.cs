@@ -141,5 +141,23 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
                 return await Error(ex.Message, "", keyValue, DbLogType.Delete);
             }
         }
+
+
+        //
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetListJson(string keyword)
+        {
+            var data = await _service.GetList(keyword);
+            return Content(data.ToJson());
+        }
+
+
+
+
+
+
+
+
     }
 }

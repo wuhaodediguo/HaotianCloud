@@ -2,282 +2,541 @@
     ViewBag.Title = "Form";
     Layout = "~/Views/Shared/_Form.cshtml";
 }
-<style>
-    .layui-form-label {
-        float: left;
-        display: block;
-        padding: 9px 15px;
-        width: 60px;
-        font-weight: 400;
-        line-height: 20px;
-        text-align: right;
-    }
-
-    .lay-step {
-        font-size: 0;
-        width: 400px;
-        margin: 0 auto;
-        max-width: 100%;
-        padding-left: 30px;
-    }
-
-    .layui-table-view {
-        margin-left: 30px;
-        margin-right: 10px;
-    }
-
-    .layui-input-block {
-        margin-left: 90px;
-        min-height: 36px;
-        margin-right: 10px;
-    }
-
-    .layui-card > .layui-card-body {
-        position: relative;
-        padding: 10px 15px;
-        line-height: 24px;
-        overflow: auto;
-        height: 300px;
-    }
-</style>
 <script>
-    layui.use(['jquery', 'form', 'laydate', 'optimizeSelectOption', 'common', 'step','wangEditor'], function () {
+    //父传子示例
+    function initForm(data) {
+        layui.use(['common'], function () {
+            var common = layui.common;
+            common.val('adminform', data);
+        });
+    }
+    layui.use(['jquery', 'form', 'laydate', 'optimizeSelectOption', 'common', 'table', 'layer'], function () {
         var form = layui.form,
             $ = layui.$,
             common = layui.common,
-            wangEditor = layui.wangEditor,
-            step = layui.step;
-        var editor = new wangEditor("#editor");
-        
-        editor.create();
+            table = layui.table,
+
+            laydate = layui.laydate;
+
         var keyValue = $.request("keyValue");
         //权限字段
-        common.authorizeFields('stepForm');
-        wcLoading.close();
-        step.render({
-            elem: '#stepForm',
-            filter: 'stepForm',
-            width: '100%', //设置容器宽度
-            stepWidth: '750px',
-            height: '600px',
-            stepItems: [{
-                title: '基本信息'
-            }, {
-                title: '详细描述'
-            }, {
-                title: 'SEO选项'
-            }]
-        });
-        form.on('submit(formStep)', function (data) {
-            step.next('#stepForm');
-            return false;
-        });
-        form.on('submit(formStep2)', function (data) {
-            step.next('#stepForm');
-            return false;
-        });
-        $('.pre').click(function () {
-            step.pre('#stepForm');
-        });
-        $('.next').click(function () {
-            step.next('#stepForm');
-        });
+        common.authorizeFields('adminform');
+        //此处需修改
+        //类型为时间时
+        //laydate.render({
+        //elem: '#F_Birthday'
+        //, btns: ['clear', 'now']
+        //, trigger: 'click',
+        //format: 'yyyy-MM-dd',
+        //});
+
         $(function () {
+
             initControl();
             if (!!keyValue) {
                 common.ajax({
-                    url: '/ContentManage/ArticleNews/GetFormJson',
-                    dataType: 'json',
+                    url: "/VehicleManage/monitor/GetFormJson",
+                    dataType: "json",
                     data: { keyValue: keyValue },
                     async: false,
                     success: function (data) {
-                        common.val('stepForm', data);
-                        $('#F_ImgUrlPic').attr('src', data.F_ImgUrl); //图片链接
-                        editor.txt.text(entitiestoUtf16($("#F_Description").val()));
-                        common.setReadOnly('adminform');
+                        common.val('adminform', data);
+                        var keyValue2 = $("#F_Id").val();
+
+                        common.ajax({
+                            dataType: "json",
+                            data: { keyValue2: keyValue2 },
+                            async: false,
+                            url: '/VehicleManage/monitor/GetDetailListJson',
+                            success: function (oldData) {
+
+                                tableIns.reload({
+                                    data: oldData.Result
+                                });
+
+                            }
+
+                        });
+
+
                     }
                 });
             }
-            common.setReadOnly('stepForm');
+
             form.render();
         });
+        wcLoading.close();
         function initControl() {
+            //此处需修改
             //绑定数据源
             //类型为下拉框时
-            $("#F_CategoryId").bindSelect({
-                url: "/ContentManage/ArticleCategory/GetListJson",
-                id: "F_Id",
-                text: "F_FullName",
-                search: true,
+
+            $("#DeviceNo").bindSelect({
+                data: top.clients.dataItems['sbbh'],
+                id: "",
             });
+            $("#devicetype").bindSelect({
+                data: top.clients.dataItems['DevType'],
+                id: "",
+            });
+
         }
-    });
-    function previewImg(obj) {
-        var img = new Image();
-        img.src = obj.src;
-        var height = img.height + 50; //获取图片高度
-        var width = img.width; //获取图片宽度
-        if (height > 500) { height = 500; };
-        if (width > 500) { width = 500; };
-        var imgHtml = "<img src='" + obj.src + "' style=\"height: " + (height - 43) + "px; width: " + width + "px; line-height: 25px!important;\"/>";
-        //弹出层
-        layer.open({
-            type: 1,
-            shade: 0.8,
-            offset: 'auto',
-            area: [width + 'px', height + 'px'],
-            shadeClose: true,//点击外围关闭弹窗
-            scrollbar: false,//不现实滚动条
-            title: "图片预览", //不显示标题
-            content: imgHtml, //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
-            cancel: function () {
-                //layer.msg('捕获就是从页面已经存在的元素上，包裹layer的结构', { time: 5000, icon: 6 });
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var postData = data.field;
+
+            var layTableId = "layTable";
+            //var oldData = table.cache[layTableId];
+            //console.log(oldData);
+            //for (var i = 0, row; i < oldData.length; i++) {
+            //    row = oldData[i];
+            //    if (!row.DeviceType) {
+            //        layer.msg("检查每一行，请选择摄像机类型！", { icon: 5 }); //提示
+            //        return;
+            //    }
+            //}
+
+            if (!postData["F_EnabledMark"]) postData["F_EnabledMark"] = false;
+            common.submitForm({
+                url: "/VehicleManage/monitor/SubmitForm2?rowsdetail=" + JSON.stringify(table.cache[layTableId], null, 2) + "&keyValue=" + keyValue,
+                param: postData,
+                success: function () {
+                    common.parentreload('data-search-btn');
+                }
+            })
+            return false;
+        });
+
+
+        //准备视图对象
+        window.viewObj = {
+
+            tbData: [{
+                tempId: new Date().valueOf(),
+                DeviceType: 1,
+                state: 1
+            }],
+            DeviceTypeData: [
+                { id: 1, name: '网络摄像机' },
+                { id: 2, name: '模拟摄像机' },
+                { id: 3, name: '云台和传感器设备等' }
+            ],
+
+            renderSelectOptions: function (data, settings) {
+
+                settings = settings || {};
+                var valueField = settings.valueField || 'value',
+                    textField = settings.textField || 'text',
+                    selectedValue = settings.selectedValue || "";
+                var html = [];
+                for (var i = 0, item; i < data.length; i++) {
+                    item = data[i];
+                    html.push('<option value="');
+                    html.push(item[valueField]);
+                    debugger;
+                    html.push('"');
+                    if (selectedValue && item[valueField] == selectedValue) {
+                        html.push(' selected="selected"');
+                    }
+                    html.push('>');
+                    html.push(item[textField]);
+                    html.push('</option>');
+                }
+                return html.join('');
+            }
+        };
+
+
+        //数据表格实例化
+        var tbWidth = $("#tableRes").width();
+        var layTableId = "layTable";
+        var tableIns = table.render({
+            elem: '#dataTable',
+            id: layTableId,
+            data: viewObj.tbData,
+            width: tbWidth,
+            totalRow: false,
+            page: false,
+            loading: true,
+            even: true, //不开启隔行背景
+            cols: [[
+                { title: '通道号', type: 'numbers', width: '60' },
+                {
+                    field: 'DeviceType', title: '摄像机类型', width: '178', templet: function (d) {
+                        var options = viewObj.renderSelectOptions(viewObj.DeviceTypeData, { valueField: "id", textField: "name", selectedValue: d.DeviceType });
+
+                        return '<a lay-event="DeviceType"></a><select name="DeviceType" lay-filter="DeviceType">' + options + '</select>';
+                    }
+                },
+                { field: 'CameraType', title: '摄像机种类', edit: 'text', width: '95', },
+                { field: 'Model', title: '型号', edit: 'text', width: '80', },
+                { field: 'Manufacturer', title: '生产厂家', edit: 'text', width: '170', },
+                { field: 'ChnName', title: '通道名称', edit: 'text', width: '80', },
+                { field: 'chnNumber', title: '通道编号', edit: 'text', width: '70', },
+                {
+                    field: 'tempId', title: '操作', width: '60', templet: function (d) {
+                        return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del" lay-id="' + d.tempId + '"><i class="layui-icon layui-icon-delete"></i>移除</a>';
+                    }
+                }
+            ]],
+            done: function (res, curr, count) {
+                viewObj.tbData = res.data;
+                $(document).on('keydown', '.layui-table-edit', function (e) {
+
+                    var td = $(this).parent("td"), tr = td.parent('tr'), trs = tr.parent().find('tr'),
+                        tr_index = tr.index(), td_index = td.index(),
+                        td_last_index = tr.find('[data-edit="text"]:last').index(),
+                        td_first_index = tr.find('[data-edit="text"]:first').index(),
+                        tr_last_index = trs.last().index(),
+                        tr_first_index = 0;
+                    switch (e.keyCode) {
+                        case 9:     //tab键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        //tab只支持上下移动切换,竟然找不到this对象所在的td
+                        case 13:     //enter键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        case 39:     //右键
+                            if (td_index == td_last_index) {
+                                if (tr_index == trs.length - 1) trs.eq(0).find('td').eq(td_first_index).click();
+                                else tr.next().find('td').eq(td_first_index).click();
+                            } else {
+                                td.nextAll('[data-edit="text"]:first').click();
+                            }
+                            break;
+                        case 37:     //左键
+                            if (td_index == td_last_index) td.prevAll('[data-edit="text"]:first').click();
+                            else td.prevAll('[data-edit="text"]:first').click();
+                            break;
+                        case 38:     //上键
+                            if (tr_index == tr_first_index) tr.eq(tr_last_index).find('td').eq(td_index).click();
+                            else tr.prev().find('td').eq(td_index).click();
+                            break;
+                        case 40:     //下键
+                            if (tr_index == tr_last_index) trs.eq(0).find('td').eq(td_index).click();
+                            else tr.next().find('td').eq(td_index).click();
+                            break;
+                    }
+                })
             }
         });
-    }
+
+        //定义事件集合
+        var active = {
+            addRow: function () {	//添加一行
+
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+
+                var newRow = { tempId: new Date().valueOf(), DeviceType: '1', CameraType: '', Model: '', Manufacturer: '', ChnName: '', chnNumber: '' };
+                oldData.push(newRow);
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            updateRow: function (obj) {
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+                for (var i = 0, row; i < oldData.length; i++) {
+                    row = oldData[i];
+                    if (row.tempId == obj.tempId) {
+                        $.extend(oldData[i], obj);
+                        return;
+                    }
+                }
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            removeEmptyTableCache: function () {
+                var oldData = table.cache[layTableId];
+                for (var i = 0, row; i < oldData.length; i++) {
+                    row = oldData[i];
+                    if (!row || row.length == 0) {
+                        oldData.splice(i, 1);    //删除一项
+                    }
+                    continue;
+                }
+                tableIns.reload({
+                    data: oldData
+                });
+            },
+            save: function () {
+                var oldData = table.cache[layTableId];
+                console.log(oldData);
+                for (var i = 0, row; i < oldData.length; i++) {
+                    row = oldData[i];
+                    if (!row.DeviceType) {
+                        layer.msg("检查每一行，请选择一个摄像机！", { icon: 5 }); //提示
+                        return;
+                    }
+                }
+                //document.getElementById("jsonResult").innerHTML = JSON.stringify(table.cache[layTableId], null, 2);	//使用JSON.stringify() 格式化输出JSON字符串
+            }
+        }
+
+        //激活事件
+        var activeByType = function (type, arg) {
+
+            if (arguments.length === 2) {
+                active[type] ? active[type].call(this, arg) : '';
+            } else {
+                active[type] ? active[type].call(this) : '';
+            }
+        }
+
+        //注册按钮事件
+        $('.layui-btn[data-type]').on('click', function () {
+
+            var type = $(this).data('type');
+            activeByType(type);
+
+        });
+
+        //监听select下拉选中事件
+        form.on('select(DeviceType)', function (data) {
+
+            var elem = data.elem; //得到select原始DOM对象
+            $(elem).prev("a[lay-event='DeviceType']").trigger("click");
+        });
+
+        //监听工具条
+        table.on('tool(dataTable)', function (obj) {
+            var data = obj.data, event = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象;
+            console.log(data);
+            switch (event) {
+                case "DeviceType":
+                    //console.log(data);
+
+                    var select = tr.find("select[name='DeviceType']");
+                    if (select) {
+                        var selectedVal = select.val();
+                        if (!selectedVal) {
+                            layer.tips("请选择一个摄像机", select.next('.layui-form-select'), { tips: [3, '#FF5722'] }); //吸附提示
+                        }
+                        console.log(selectedVal);
+                        $.extend(obj.data, { 'DeviceType': selectedVal });
+                        activeByType('updateRow', obj.data);	//更新行记录对象
+                    }
+                    break;
+                case "del":
+                    layer.confirm('真的删除当前行么？', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        layer.close(index);
+                        activeByType('removeEmptyTableCache');
+                    });
+                    break;
+            }
+        });
+
+
+
+    });
 </script>
+<style>
+
+    .layuimini-form > .layui-form-item .layui-form-label {
+        width: 125px !important;
+    }
+</style>
 <body>
     <div class="layuimini-container">
         <div class="layuimini-main">
-            <div class="layui-carousel" id="stepForm" lay-filter="stepForm">
-                <div carousel-item>
-                    <div>
-                        <form class="layui-form layuimini-form">
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">新闻类别</label>
-                                <div class="layui-input-block">
-                                    <select id="F_CategoryId" name="F_CategoryId" lay-filter="F_CategoryId" lay-search>
-                                        <option value="">请选择</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">内容标题</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_Title" name="F_Title" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">URL链接</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_LinkUrl" name="F_LinkUrl" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">封面图片</label>
-                                <div class="layui-input-block">
-                                    <input type="text" class="layui-input" name="F_ImgUrl" id="F_ImgUrl" readonly="readonly">
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label"></label>
-                                <div class="layui-input-block">
-                                    <div class="layui-upload-list">
-                                        <img id="F_ImgUrlPic" width="200" height="200" onclick="previewImg(this)" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">排序数字</label>
-                                <div class="layui-input-block">
-                                    <input type="number" pattern="[0-9]*" id="F_SortCode" name="F_SortCode" lay-verify="required" class="layui-input ">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">选项</label>
-                                <div class="layui-input-block">
-                                    <input id="F_IsTop" name="F_IsTop" type="checkbox" value="true" title="是否置顶">
-                                    <input id="F_IsRed" name="F_IsRed" type="checkbox" value="true" title="是否热门">
-                                    <input id="F_IsHot" name="F_IsHot" type="checkbox" value="true" title="是否推荐">
-                                    <input id="F_EnabledMark" name="F_EnabledMark" type="checkbox" value="true" checked="checked" title="是否发布">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">点击次数</label>
-                                <div class="layui-input-block">
-                                    <input type="number" pattern="[0-9]*" id="F_Click" name="F_Click" lay-verify="required" class="layui-input" value="0">
-                                </div>
-                            </div>
-                            <div class="form-group-bottom text-right">
-                                <div class="layui-input-block">
-                                    <button class="layui-btn" lay-submit lay-filter="formStep">
-                                        &emsp;下一步&emsp;
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item ">
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">所属控制器<span style="color:red">*</span></label>
+                        <div class="layui-input-inline">
+                            <select id="DeviceNo" name="DeviceNo" lay-filter="DeviceNo" lay-verify="required" lay-search>
+                                <option value="">请选择</option>
+                            </select>
+                            @*<input type="text" id="DeviceNo" name="DeviceNo" lay-verify="required" autocomplete="off" class="layui-input">*@
+                        </div>
+
                     </div>
-                    <div>
-                        <form class="layui-form layuimini-form">
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">内容描述</label>
-                                <div class="layui-input-block">
-                                    <textarea  class=" layui-hide" id="F_Description" name="F_Description" type="text/plain" style="width:100%;height:400px;"></textarea>
-                                    <div id="editor"></div>
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">摘要</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_Zhaiyao" name="F_Zhaiyao" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">来源</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_Source" name="F_Source" autocomplete="off" value="本站" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">作者</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_Author" name="F_Author" autocomplete="off" class="layui-input">
-                                </div>
-                            </div>
-                            <div class="form-group-bottom text-right">
-                                <div class="layui-input-block">
-                                    <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
-                                    <button class="layui-btn" lay-submit lay-filter="formStep2">
-                                        &emsp;下一步&emsp;
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">设备类型<span style="color:red">*</span></label>
+                        <div class="layui-input-inline">
+                            <select id="devicetype" name="devicetype" lay-filter="devicetype" lay-verify="required" lay-search>
+                                <option value="">请选择</option>
+                            </select>
+
+                        </div>
                     </div>
-                    <div>
-                        <form class="layui-form layuimini-form">
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">Seo标题</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_SeoTitle" name="F_SeoTitle" autocomplete="off" class="layui-input">
-                                </div>
+                    @*<div class="layui-inline">
+                            <label class="layui-form-label">设备名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="DeviceName" name="DeviceName" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">Seo关键字</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_SeoKeywords" name="F_SeoKeywords" autocomplete="off" class="layui-input">
-                                </div>
+                        </div>*@
+
+                </div>
+
+                <div class="layui-form-item ">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">品牌</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="Brand" name="Brand" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">型号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="model" name="model" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="F_Id" name="F_Id">
+                    @*<div class="layui-inline">
+                            <label class="layui-form-label">长</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="devicelength" name="devicelength" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">Seo描述</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_SeoDescription" name="F_SeoDescription" autocomplete="off" class="layui-input">
-                                </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">宽</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="devicewide" name="devicewide" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="layui-form-item layui-hide">
-                                <label class="layui-form-label">Tags标签</label>
-                                <div class="layui-input-block">
-                                    <input type="text" id="F_Tags" name="F_Tags" autocomplete="off" class="layui-input">
-                                </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">高</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="devicehigh" name="devicehigh" autocomplete="off" class="layui-input">
                             </div>
-                            <div class="form-group-bottom text-right">
-                                <div class="layui-input-block">
-                                    <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
-                                </div>
+                        </div>*@
+
+                </div>
+
+
+                <div class="layui-form-item layui-hide">
+                    <div class="layui-form-item ">
+                        <input type="hidden" id="F_Id" name="F_Id">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">IP地址（WIFI）<span style="color:red">*</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="IPAddress" name="IPAddress" lay-verify="required" autocomplete="off" class="layui-input">
                             </div>
-                        </form>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">IP地址（5GCPE）<span style="color:red">*</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="IPAddress2" name="IPAddress2" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">端口号（WIFI）<span style="color:red">*</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="port" name="port" autocomplete="off" lay-verify="required" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">端口号（5GCPE）<span style="color:red">*</span></label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="port2" name="port2" autocomplete="off" lay-verify="required" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtmp发布地址
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtmpurl" name="rtmpurl" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtmp发布地址
+                                （5GCPE）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtmpurl2" name="rtmpurl2" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtsp发布地址
+                                （WIFI）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl" name="rtspurl" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">
+                                rtsp发布地址
+                                （5GCPE）<span style="color:red">*</span>
+                            </label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rtspurl2" name="rtspurl2" lay-verify="required" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <div class="layui-row">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入备注" id="remark1" name="remark1" class="layui-textarea" style="width:800px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="layui-form-item ">
+                        <div class="layui-inline" style="margin-top:5px;">
+                            <label class="layui-form-label"></label>
+                            <button type="button" class="layui-btn layui-btn-sm" data-type="addRow" title="添加视频通道">
+                                <i class="layui-icon layui-icon-add-1"></i> 添加视频通道
+                            </button>
+                        </div>
+                    </div>*@
+                @*<div class="layui-form-item layui-form-text">
+
+                        <div class="layui-row">
+                            <label class="layui-form-label"></label>
+
+                            <div class="layui-input-block">
+                                <div id="tableRes" style="width:800px;">
+                                    <table id="dataTable" lay-filter="dataTable" class="layui-hide"></table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>*@
+
+                <div class="layui-form-item layui-hide">
+                    <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                </div>
+
+
+                @*<div class="layui-form-item" style="margin-bottom:100px;">
+                        <button class="layui-btn site-demo-active" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
+                    </div>
+                    <div class="layui-form-item">
+
+                    </div>
+                    <div class="layui-form-item">
+
+                    </div>*@
             </div>
         </div>
     </div>

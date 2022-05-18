@@ -12,6 +12,18 @@
                 common = layui.common;
             //加载数据
             wcLoading.close();
+            initControl();
+           
+            function initControl() {
+                debugger
+                $("#devicetype").bindSelect({
+                    data: top.clients.dataItems['sbbh'],
+                    id: "",
+                });
+
+            }
+            form.render();
+
             var value = $.request("value");
             var parentform = $.request("parentform");
             var currentWindow = !parent[parentform] ? common.currentWindow() : parent[parentform];
@@ -20,6 +32,7 @@
             var rendertree = common.rendertreetable({
                 elem: '#currentTableId',
                 url: '/VehicleManage/Monitor/GetFormGridJson',
+                //data: top.clients.dataItems["sbbh"],
                 height: 'full-60',
                 toolbar: false,//工具栏
                 search:false,
@@ -33,17 +46,27 @@
                 },
                 cols: [[
                     { type: 'checkbox' },
-                    { field: 'DeviceName', title: '名称', width: 250 },
-                    { field: 'DeviceNo', title: '编号', width: 200 },
+                    {
+                        field: 'devicetype', title: '所属控制器', width: 150, sort: true, filter: true,
+                        templet: function (d) {
+                            return top.clients.dataItems["sbbh"][d.DeviceNo] == undefined ? "" : top.clients.dataItems["sbbh"][d.DeviceNo];
+                        }
+                    },
+                    { field: 'devicetype', title: '设备编号', width: 150 },
+                    {
+                        field: 'devicetype', title: '设备类型', width: 150, sort: true, filter: true,
+                        templet: function (d) {
+                            return top.clients.dataItems["DevType"][d.devicetype] == undefined ? "" : top.clients.dataItems["DevType"][d.devicetype];
+                        }
+                    },
+                    //{ field: 'F_ItemCode', title: '设备编号', width: 150 },
+                    //{ field: 'F_ItemName', title: '设备类型', width: 250 },
+                   
                     
                     {
                         field: 'F_EnabledMark', title: '状态', width: 80,
                         templet: function (d) {
-                            if (d.F_EnabledMark == true) {
-                                return "<span class='layui-btn layui-btn-normal layui-btn-xs'>有效</span>";
-                            } else {
-                                return "<span class='layui-btn layui-btn-warm layui-btn-xs'>无效</span>";
-                            }
+                            return "<span class='layui-btn layui-btn-normal layui-btn-xs'>有效</span>";
                         }
                     }
                 ]],
@@ -57,14 +80,20 @@
             // 监听行双击事件
             treeTable.on('rowDouble(currentTableId)', function (obj) {
                 var pvalue = obj.data.F_Id;
-                var pname = obj.data.DeviceName;
-                var pcode = obj.data.DeviceNo;
+                //var pname = obj.data.DeviceName;
+                //var pname = obj.data.F_ItemName;
+                //var pcode = obj.data.F_ItemCode;
+
+                var pname = top.clients.dataItems["DevType"][obj.data.devicetype];
+                var pcode = obj.data.devicetype;
+               
+                debugger
                 common.modalConfirm("注：您确定要选择{编号：" + pcode + "，名称：" + pname + "}的数据吗？", function (r) {
                     if (r) {
                         if (!!pvalue) {
                             currentWindow.$('#' + value).val(pvalue);
                         }
-                        if (!!pname) {
+                        if (!!pcode) {
                             currentWindow.$('#' + name).val(pname);
                         }
                         common.modalClose();
@@ -74,7 +103,7 @@
             });
             // 监听搜索操作
             form.on('submit(data-search-btn)', function (data) {
-                queryJson = data.field.txt_keyword;
+                queryJson = data.field.devicetype;
                 common.reloadtreetable(rendertree, {
                     where: { keyword: queryJson },
                 });
@@ -91,10 +120,16 @@
                 var pvalue = [];
                 var pname = [];
                 var pcode = [];
+                debugger
                 for (var i = 0; i < checkStatus.length; i++) {
                     pvalue.push(checkStatus[i].F_Id);
-                    pname.push(checkStatus[i].DeviceName);
-                    pcode.push(checkStatus[i].DeviceNo);
+                    //pname.push(checkStatus[i].DeviceName);
+
+                    //pname.push(checkStatus[i].F_ItemName);
+                    //pcode.push(checkStatus[i].F_ItemCode);
+
+                    pname.push(top.clients.dataItems["DevType"][checkStatus[i].devicetype]);
+                    pcode.push(checkStatus[i].devicetype);
                 }
                 if (pvalue.length == 0) {
                     common.modalConfirm("注：您确定要清除选择的数据吗？", function (r) {
@@ -132,11 +167,15 @@
             @*<legend>搜索信息</legend>*@
             <div>
                 <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form layuimini-form" lay-filter="adminform">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">关键字:</label>
+                            <label class="layui-form-label">设备类型</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="txt_keyword" name="txt_keyword" autocomplete="off" class="layui-input" placeholder="">
+                                <select id="devicetype" name="devicetype" lay-filter="devicetype">
+                                    <option value="">请选择</option>
+                                </select>
+
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -147,9 +186,11 @@
                     <div class="layui-form-item layui-hide">
                         <button class="layui-btn" lay-submit id="submit" lay-filter="saveBtn">确认保存</button>
                     </div>
+                </div>
                 </form>
             </div>
         </fieldset>
+
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
     </div>
 </div>

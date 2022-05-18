@@ -214,6 +214,7 @@ layui.define(["jquery", "layer", 'table', 'soulTable','common'], function (expor
             table.on('row(' + tableFilter+')', function (obj) {
                 obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
             })
+            debugger
             //多选框监听
             table.on(type+'(' + tableFilter + ')', function (obj) {
                 //控制按钮

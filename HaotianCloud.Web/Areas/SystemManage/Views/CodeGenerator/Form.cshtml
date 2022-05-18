@@ -529,6 +529,7 @@
         });
         var codeList;
         form.on('submit(formStep3)', function (data) {
+            
             baseConfig.PageForm.ShowMode = $("#n_columns").val();
             baseConfig.PageForm.FieldList = [];
             $("#divForm label:not(.hidden)").each(function (i, ele) {
@@ -544,6 +545,7 @@
                 common.modalMsg("未添加表单字段", "warning");
                 return false;
             }
+            debugger
             $.ajax({
                 url: "/SystemManage/CodeGenerator/CodePreviewJson",
                 type: "post",
@@ -551,6 +553,7 @@
                 async: false,
                 data: baseConfig,
                 success: function (data) {
+                    debugger
                     if (data.state == "success") {
                         $("div.layui-tab-item").each(function (i, ele) {
                             var col = $(ele).attr("col");

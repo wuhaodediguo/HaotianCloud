@@ -58,6 +58,18 @@ namespace HaotianCloud.Domain.VehicleManage
         public string gateway { get; set; } //网关
         public string remark2 { get; set; } //备用2
 
+        public string IPAddress2 { get; set; } = "";
+        public int port2 { get; set; }
+
+        public string rtmpurl { get; set; } = "";
+        public string rtspurl { get; set; } = "";
+        public string rtspurl2 { get; set; } = "";
+        public string rtmpurl2 { get; set; } = "";
+        public int tongdao { get; set; }
+
+
+        public string devicetype { get; set; } //设备类型
+
         //public int VideochannelID { get; set; } //视频通道
 
         /// <summary>

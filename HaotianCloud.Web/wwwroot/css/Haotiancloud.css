@@ -1,6 +1,6 @@
 ﻿body {
     margin: 5px 5px 5px 5px;
-    background: #f2f2f2;
+    /*background: #f2f2f2;*/
 }
 .form-group-bottom {
     position: fixed;
@@ -219,17 +219,17 @@
     margin: 0 0 0 5px;
 }
 .layuimini-form > .layui-form-item .layui-form-label {
-    width: 80px !important;
+    width: 120px !important;
 }
 .layuimini-form > .layui-form-item .layui-input-block {
-    margin-left: 110px !important;
+    margin-left: 150px !important;
 }
 .layuimini-form > .layui-form-item > .layui-form-label {
-    width: 90px !important;
+    width: 130px !important;
 }
 
 .layuimini-form > .layui-form-item > .layui-input-block {
-    margin-left: 120px !important;
+    margin-left: 160px !important;
 }
 /*chrome滚动条*/
 ::-webkit-scrollbar-track-piece {

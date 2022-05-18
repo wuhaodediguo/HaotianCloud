@@ -1,0 +1,307 @@
+﻿@{
+    ViewBag.Title = "Details"; 
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        //权限字段
+        common.authorizeFields('adminform');
+        //此处需修改
+        //类型为时间时
+        //laydate.render({
+            //elem: '#F_Birthday'
+            //, btns: ['clear', 'now']
+            //, trigger: 'click',
+            //format: 'yyyy-MM-dd',
+        //});
+
+        $(function () {
+            initControl();
+            common.ajax({
+                url: '/VehicleManage/vehicle_info/GetFormJson',
+                dataType: 'json',
+                data: { keyValue: keyValue },
+                async: false,
+                success: function (data) {
+                    common.val('adminform', data);
+                    common.setReadOnly('adminform');
+                    form.render();
+                 }
+            });
+       });
+       wcLoading.close();
+
+       function initControl() {
+           //此处需修改
+           //绑定数据源
+           //类型为下拉框时
+       }
+   });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车牌号,唯一标识</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehiIDNO" name="VehiIDNO" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">所属公司ID</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="CompanyID" name="CompanyID" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">设备类型</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="DevType" name="DevType" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">使用状态</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="UseStatus" name="UseStatus" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车牌类型</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PlateType" name="PlateType" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆颜色</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehiColor" name="VehiColor" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆品牌</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehiBand" name="VehiBand" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆类型</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehiType" name="VehiType" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆用途</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehiUse" name="VehiUse" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">司机ID,关联司机表</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="DriverId" name="DriverId" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">生产日期</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="DateProduct" name="DateProduct" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">图标类型</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="Icon" name="Icon" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">通道数目</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="ChnCount" name="ChnCount" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">通道名称</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="ChnName" name="ChnName" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">IO输入的数目</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="IOInCount" name="IOInCount" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">IO输入名称</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="IOInName" name="IOInName" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">IO输出的数目</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="IOOutCount" name="IOOutCount" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">IO输出名称</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="IOOutName" name="IOOutName" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">温度传感器个数</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="TempCount" name="TempCount" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">温度传感器名称</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="TempName" name="TempName" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">外设参数属性</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="Module" name="Module" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">是否启用缴费功能</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PayEnable" name="PayEnable" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">合约开始日</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PayBegin" name="PayBegin" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">合约期限（以月为单位）</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PayPeriod" name="PayPeriod" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">已付费</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PayMonth" name="PayMonth" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">宽限天数</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="PayDelayDay" name="PayDelayDay" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">存储天数</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="StoDay" name="StoDay" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">更新时间</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="UpdateTime" name="UpdateTime" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">保险失效日期</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="SafeEndDate" name="SafeEndDate" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">行驶证编号</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="DrivingNum" name="DrivingNum" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">行驶证到期时间</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="DrivingEndDate" name="DrivingEndDate" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">运营证编号</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="OperatingNum" name="OperatingNum" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">运营证到期时间</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="OperatingEndDate" name="OperatingEndDate" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">安装日期</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="InstallTime" name="InstallTime" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆简称</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="Abbreviation" name="Abbreviation" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">载重</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="Loading" name="Loading" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">更多内容ID</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="MoreInfoID" name="MoreInfoID" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆等级</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="VehicleGrade" name="VehicleGrade" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">备注</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="Remark" name="Remark" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">车辆自定义菜单</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="CustomizeMenu" name="CustomizeMenu" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">公众号ID</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="WxOpenid" name="WxOpenid" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+                <div class="layui-form-item layui-hide">
+                   <label class="layui-form-label required">体积</label>
+                   <div class="layui-input-block">
+                        <input type="text" id="transport_volume" name="transport_volume" lay-verify="required" class="layui-input">
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</body>
+

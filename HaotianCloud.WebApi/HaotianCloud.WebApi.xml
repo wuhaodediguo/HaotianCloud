@@ -4,21 +4,51 @@
         <name>HaotianCloud.WebApi</name>
     </assembly>
     <members>
+        <member name="T:HaotianCloud.WebApi.Controllers.sanyiController">
+            <summary>
+            三一重工服务WebAPI
+            </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.Controllers.sanyiController._cockpitService">
+             <summary>
+            自动注入服务
+             </summary>
+        </member>
+        <member name="P:HaotianCloud.WebApi.Controllers.sanyiController._reqstateService">
+             <summary>
+            自动注入服务
+             </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.sanyiController.Uptcockpit(HaotianCloud.Domain.SystemOrganize.sysconfigs)">
+            <summary>
+            Uptcockpit 的摘要说明
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.sanyiController.GetAllCockpitInfos(System.String)">
+            <summary>
+            GetAllCockpitInfos 的摘要说明
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.sanyiController.UptcockpitWJJ(HaotianCloud.Domain.VehicleManage.ReqstateEntity)">
+            <summary>
+            UptcockpitWJJ 的摘要说明
+            </summary>
+        </member>
         <member name="T:HaotianCloud.WebApi.Controllers.TestController">
             <summary>
-            测试001文件
+            测试文件
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.TestController.Get2">
+            <summary>
+            测试文件get2
             </summary>
         </member>
         <member name="T:HaotianCloud.WebApi.Controllers.UserController">
             <summary>
-            用户接口
+            用户测试接口
             </summary>
         </member>
-      <member name="T:HaotianCloud.WebApi.Controllers.YGController">
-        <summary>
-          瑶光盒子接口
-        </summary>
-      </member>
         <member name="M:HaotianCloud.WebApi.Controllers.UserController.Login(HaotianCloud.WebApi.Controllers.UserController.LoginRequest)">
             <summary>
             用户登录
@@ -52,14 +82,62 @@
             域名
             </summary>
         </member>
-
-       
+        <member name="T:HaotianCloud.WebApi.Controllers.WXApiController">
+            <summary>
+            无人接驳车WebAPI
+            </summary>
+        </member>
+        <member name="F:HaotianCloud.WebApi.Controllers.WXApiController.strconnectsql">
+            <summary>
+            ConnectionString
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.WXApiController.GetOpenID(System.String)">
+            <summary>
+            GetOpenID 的摘要说明
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.WXApiController.CreateOrderNo(HaotianCloud.WebApi.Controllers.WXApiController.resultCreateOrder)">
+            <summary>
+            CreateOrderNo 创建订单
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.WXApiController.getOrdermoney(HaotianCloud.WebApi.Controllers.WXApiController.resultOrderMoney)">
+            <summary>
+            getOrdermoney 查询订单价格
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.WXApiController.AddCreateOrderNo(HaotianCloud.WebApi.Controllers.WXApiController.resultCreateOrder,System.String@)">
+            <summary>
+            Addresultshoudong增加一条数据
+            </summary>
+        </member>
+        <member name="T:HaotianCloud.WebApi.Controllers.ygController">
+            <summary>
+            瑶光WebAPI
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.ygController.Getvehicleshape(System.String)">
+            <summary>
+            车辆外型参数00取得
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.ygController.Getvehicleshape2(System.String)">
+            <summary>
+            WebAPI
+            </summary>
+        </member>
+        <member name="M:HaotianCloud.WebApi.Controllers.ygController.Postvehicleshape(System.Object)">
+            <summary>
+            车辆外型参数设置
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:HaotianCloud.WebApi.AuthorizeAttribute._authorize">
             <summary>
             权限名称
             </summary>
         </member>
-
         <member name="T:HaotianCloud.WebApi.AuthorizeFilterAttribute">
             <summary>
             权限验证

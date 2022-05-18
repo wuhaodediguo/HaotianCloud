@@ -2,7 +2,7 @@
 <p></p>
 
 <p align="center">
-<img src="http://180.130.190.32:50000/icon/favicon.ico" height="80"/>
+<img src="http://180.130.190.32:5000/icon/favicon.ico" height="80"/>
 </p>
 <div align="center">
 
@@ -31,7 +31,7 @@
 - 租户管理(未实现，理论阶段)
 
 
-- 项目演示地址：http://180.130.190.32:50000/  （账号：admin 密码：0000，数据库2个小时还原一次）
+- 项目演示地址：http://180.130.190.32:5000/  （账号：admin 密码：0000，数据库2个小时还原一次）
 - 文档地址：https://github.com/wuhaodediguo/HaotianCloud/blob/master/README.md
 
 #### 前端以及后端使用技术介绍
@@ -88,6 +88,6 @@
 
 开源项目不易，若此项目能得到你的青睐，可以捐赠支持作者持续开发与维护，感谢所有支持开源的朋友。
 <p align="left">
-<img src="http://180.130.190.32:50000/icon/testfor1.jpg" height="200"/>
-<img src="http://180.130.190.32:50000/icon/testfor2.jpg" height="200"/>
+<img src="http://180.130.190.32:5000/icon/testfor1.jpg" height="200"/>
+<img src="http://180.130.190.32:5000/icon/testfor2.jpg" height="200"/>
 </p>

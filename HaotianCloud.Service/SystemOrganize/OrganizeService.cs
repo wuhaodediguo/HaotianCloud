@@ -31,6 +31,20 @@ namespace HaotianCloud.Service.SystemOrganize
             var cachedata =await repository.CheckCacheList(cacheKey + "list");
             return cachedata.Where(a=>a.F_DeleteMark==false).ToList();
         }
+        //
+        #region 获取数据 F_CategoryId == "Company"
+        public async Task<List<OrganizeEntity>> GetList(string keyword = "")
+        {
+            var cachedata = await repository.CheckCacheList(cacheKey + "list");
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                //此处需修改
+                cachedata = cachedata.Where(t => t.F_FullName.Contains(keyword) || t.F_EnCode.Contains(keyword)).ToList();
+            }
+            return cachedata.Where(t => t.F_DeleteMark == false && t.F_CategoryId == "Company").OrderByDescending(t => t.F_CreatorTime).ToList();
+        }
+        #endregion
+
         public async Task<List<OrganizeEntity>> GetLookList()
         {
             var query = repository.IQueryable().Where(a => a.F_DeleteMark == false);

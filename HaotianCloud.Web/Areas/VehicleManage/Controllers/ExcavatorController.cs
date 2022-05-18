@@ -1,13 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using HaotianCloud.Code;
+﻿using HaotianCloud.Code;
 using HaotianCloud.Domain.VehicleManage;
 using HaotianCloud.Service;
+using HaotianCloud.Service.SystemManage;
 using HaotianCloud.Service.VehicleManage;
 using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
 {
@@ -17,13 +17,17 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
     /// 描 述：控制器类
     /// </summary>
     [Area("VehicleManage")]
-    [AllowAnonymous]
-    public class ExcavatorController :  ControllerBase
+    //[AllowAnonymous]
+    public class excavatorController :  ControllerBase
     {
 
         //属性注入示例
         public ExcavatorService _service { get; set; }
+        public MonitorService _monitorService { get; set; }
         public Devicechn_infoService _service2 { get; set; }
+        //public ItemsDataService _service3 { get; set; }
+        public ItemsDataService _itemsDetailService { get; set; }
+        public Cms_reqstateService _reqstateService { get; set; }
         #region 获取数据
         [HttpGet]
         [HandlerAjaxOnly]
@@ -31,7 +35,7 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         {
             //此处需修改
             pagination.order = "desc";
-            pagination.sort = "F_CreatorTime desc";
+            pagination.sort = "DeviceNo asc";
             var data = await _service.GetLookList(pagination, keyword);
             return Success(pagination.records, data);
         }
@@ -68,13 +72,19 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
             return View();
         }
 
+        [HttpGet]
+        public virtual ActionResult Details2()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         [HandlerAjaxOnly]
         public async Task<ActionResult> GetFormGridJson(string keyword)
         {
             var data = await _service.GetLookList(keyword);
-
+            
             return Success(data.Count, data);
         }
 
@@ -84,9 +94,78 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         public async Task<ActionResult> GetFormJson(string keyValue)
         {
             var data = await _service.GetForm(keyValue);
+            if (!string.IsNullOrEmpty(data.monitorID))
+            {
+                List<string> str = new List<string>();
+                foreach (var item in data.monitorID.Split(','))
+                {
+                    var itemdata = await _itemsDetailService.GetList();
+                    var dataItemList = itemdata.FindAll(t => t.F_Id == item);
+                    foreach (var itemList in dataItemList)
+                    {
+                        str.Add(itemList.F_ItemName);
+                        break;
+                    }
+
+                    //var temp = await _monitorService.GetForm(item);
+                    //if (temp != null)
+                    //{
+                    //    //var name = await _service3.GetForm(temp.devicetype);
+
+
+                    //    //var itemdata = await _itemsDetailService.GetList();
+                    //    //var dataItemList = itemdata.FindAll(t => t.F_ItemCode == temp.devicetype);
+                    //    //foreach (var itemList in dataItemList)
+                    //    //{
+                    //    //    str.Add(itemList.F_ItemName);
+
+                    //    //}
+                    //    var itemdata = await _itemsDetailService.GetList();
+                    //    var dataItemList = itemdata.FindAll(t => t.F_ItemCode == temp.DeviceNo);
+                    //    foreach (var itemList in dataItemList)
+                    //    {
+                    //        str.Add(itemList.F_ItemName);
+                    //        break;
+                    //    }
+                       
+                    //}
+                    break;
+                }
+                data.monitorName = string.Join("  ", str.ToArray());
+            }
             return Content(data.ToJson());
         }
         #endregion
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetWJJFormJson(string keyValue)
+        {
+            var data = await _service.GetForm(keyValue);
+            if (!string.IsNullOrEmpty(data.DeviceNo))
+            {
+                var itemdata = await _reqstateService.Getcms_reqstate(data.DeviceNo);
+                return Success(itemdata.Count, itemdata);
+            }
+        
+            return Success(0, "");
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetWJJFormJson2(string keyValue, string keyword, string startTime, string endTime)
+        {
+            var data = await _service.GetForm(keyValue);
+            if (!string.IsNullOrEmpty(data.DeviceNo))
+            {
+                var itemdata = await _reqstateService.Getcms_reqstate2(data.DeviceNo, keyword, startTime, endTime);
+                return Success(itemdata.Count, itemdata);
+            }
+
+            return Success(0, "");
+        }
+
+
 
         #region 提交数据
         [HttpPost]

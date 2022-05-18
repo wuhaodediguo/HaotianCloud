@@ -325,6 +325,24 @@ namespace HaotianCloud.Web.Controllers
                 {
                     dictionaryItemList.Add(itemList.F_ItemCode, itemList.F_ItemName);
                 }
+                if (item.F_EnCode == "sbbh")
+                {
+                    Dictionary<string, string> dictionaryItemList2 = new Dictionary<string, string>();
+                    Dictionary<string, string> dictionaryItemList3 = new Dictionary<string, string>();
+                    foreach (var item2 in dictionaryItemList)
+                    {
+                        if (item2.Value.Contains("舱"))
+                        {
+                            dictionaryItemList2.Add(item2.Key, item2.Value);
+                        }
+                        else {
+                            dictionaryItemList3.Add(item2.Key, item2.Value);
+                        }
+                       
+                    }
+                    dictionaryItem.Add("sbbh2", dictionaryItemList2);
+                    dictionaryItem.Add("sbbh3", dictionaryItemList3);
+                }
                 dictionaryItem.Add(item.F_EnCode, dictionaryItemList);
             }
 

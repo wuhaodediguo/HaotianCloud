@@ -51,10 +51,11 @@ namespace HaotianCloud.Service.VehicleManage
             if (!string.IsNullOrEmpty(keyword))
             {
                 //此处需修改
-                query = query.Where(u => u.DeviceNo.Contains(keyword) || u.DeviceName.Contains(keyword));
+                query = query.Where(u => u.DeviceNo.ToLower().Contains(keyword.ToLower()) || u.devicetype.ToLower().Contains(keyword.ToLower()));
             }
             //权限过滤
-            query = GetDataPrivilege("u","", query);
+            query = GetDataPrivilege("u", "", query);
+            
             return await repository.OrderList(query, pagination);
         }
 
@@ -118,6 +119,15 @@ namespace HaotianCloud.Service.VehicleManage
             await CacheHelper.Remove(cacheKey + "list");
         }
         #endregion
+
+        public Task<List<MonitorEntity>> FindList(string item2)
+        {
+            string sql2 = "select * from monitor_info where DeviceNo ='" + item2 + "'";
+          
+            var temp02 =  repository.FindList(sql2);
+            return temp02;
+        }
+
 
     }
 }

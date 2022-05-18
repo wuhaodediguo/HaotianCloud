@@ -1,0 +1,230 @@
+﻿@{
+    ViewBag.Title = "Details"; 
+    Layout = "~/Views/Shared/_Form.cshtml";
+}
+<script>
+    layui.use(['jquery', 'form', 'laydate', 'common'], function () {
+        var form = layui.form,
+            $ = layui.$,
+            common = layui.common,
+            laydate = layui.laydate;
+        var keyValue = $.request("keyValue");
+        //权限字段
+        common.authorizeFields('adminform');
+        //此处需修改
+        //类型为时间时
+        //laydate.render({
+            //elem: '#F_Birthday'
+            //, btns: ['clear', 'now']
+            //, trigger: 'click',
+            //format: 'yyyy-MM-dd',
+        //});
+
+        $(function () {
+            initControl();
+            common.ajax({
+                url: '/VehicleManage/Device_info/GetFormJson',
+                dataType: 'json',
+                data: { keyValue: keyValue },
+                async: false,
+                success: function (data) {
+                    common.val('adminform', data);
+                    common.setReadOnly('adminform');
+                    form.render();
+                 }
+            });
+       });
+       wcLoading.close();
+
+       function initControl() {
+           //此处需修改
+           //绑定数据源
+           //类型为下拉框时
+       }
+   });
+</script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备编号,唯一标识</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevIDNO" name="DevIDNO" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">SIM卡号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SimCard" name="SimCard" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">产品品牌</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Brand" name="Brand" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">软件版本</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SoftwareVer" name="SoftwareVer" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">产品商家</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Factory" name="Factory" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备子类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevSubType" name="DevSubType" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">硬盘类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DiskType" name="DiskType" lay-verify="required" placeholder="1 SD，2 硬盘，3 SSD" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">备注</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Remark" name="Remark" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">安装日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="InstallTime" name="InstallTime" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">更新日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="UpdateTime" name="UpdateTime" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">厂家类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="FactoryType" name="FactoryType" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Password" name="Password" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">IMEI</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="IMEICode" name="IMEICode" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">所属公司ID</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="CompanyID" name="CompanyID" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">Mac地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="MacAddress" name="MacAddress" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">生产日期</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="ProductionDate" name="ProductionDate" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备序列号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="SerialID" name="SerialID" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备型号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="Model" name="Model" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">硬件版本</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="HardwareVer" name="HardwareVer" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">设备类型</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="DevType" name="DevType" lay-verify="required" placeholder="0为其他,1部标机,2北斗终端,3视频终端" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">是否启用</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="UseStatus" name="UseStatus" lay-verify="required" placeholder=" 0 启用 1禁用" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">协议类型 </label>
+                        <div class="layui-input-block">
+                            <input type="text" id="ProtocolType" name="ProtocolType" lay-verify="required" placeholder="（0未知、1 808GPS， 2 .808视频）" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">摄像头数目 </label>
+                        <div class="layui-input-block">
+                            <input type="text" id="CameraNumber" name="CameraNumber" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">运输企业</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="TransportEnterprise" name="TransportEnterprise" lay-verify="required" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+    </div>
+</body>
+

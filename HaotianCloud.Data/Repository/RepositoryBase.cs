@@ -88,6 +88,8 @@ namespace HaotianCloud.DataBase
                 throw;
             }
         }
+        
+
         public async Task<int> Insert<TEntity>(List<TEntity> entitys) where TEntity : class
         {
             try

@@ -61,5 +61,20 @@ namespace HaotianCloud.Code.Model
         public string HomePage { get; set; }
         public string MainProgram { get; set; }
         public bool? LocalLAN { get; set; }
+
+        //WX相关参数
+        public string WXappidcar { get; set; }
+        public string WXsecretcar { get; set; }
+
+
+        //驾驶舱 挖掘机参数
+        public string cockpitIP1 { get; set; }
+        public string cockpitIP2 { get; set; }
+        public string excavatorIP1 { get; set; }
+        public string excavatorIP2 { get; set; }
+
+
+
+
     }
 }

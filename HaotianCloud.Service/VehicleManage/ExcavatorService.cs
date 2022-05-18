@@ -51,7 +51,8 @@ namespace HaotianCloud.Service.VehicleManage
             if (!string.IsNullOrEmpty(keyword))
             {
                 //此处需修改
-                query = query.Where(u => u.DeviceNo.Contains(keyword) || u.DeviceName.Contains(keyword));
+                query = query.Where(u => u.DeviceNo.ToLower().Contains(keyword.ToLower()) || u.monitorID.ToLower().Contains(keyword.ToLower()));
+                //query = query.Where(u => u.DeviceNo.Contains(keyword) || u.DeviceName.Contains(keyword));
             }
             //权限过滤
             query = GetDataPrivilege("u", "", query);

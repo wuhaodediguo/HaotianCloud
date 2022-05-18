@@ -150,7 +150,10 @@ namespace HaotianCloud.WebApi
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("default", "api/{controller=ApiHome}/{action=Index}/{id?}");
+                //endpoints.MapControllerRoute("default", "api/{controller=ApiHome}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    "DefaultApi",
+                    "api/{controller}/{action}/{id?}");
             });
             GlobalContext.ServiceProvider = app.ApplicationServices;
         }

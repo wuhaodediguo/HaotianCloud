@@ -26,14 +26,16 @@
                 <button id="NF-add" name="NF-add" authorize class="layui-btn layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon">&#xe654;</i>新增</button>
                 <button id="NF-edit" name="NF-edit" authorize class="layui-btn layui-btn-sm layui-btn-warm data-edit-btn layui-hide" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</button>
                 <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
-                <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
+                <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看状态</button>
+                <button id="NF-alarm"   name="NF-alarm"   authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn layui-hide" lay-event="alarm"> <i class="layui-icon">&#xe60b;</i>查看报警</button>
+               
             </div>
         </script>
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
         <script type="text/html" id="currentTableBar">
             <a id="NF-edit" authorize class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
             <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
-            <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
+            
         </script>
     </div>
 </div>
@@ -53,19 +55,34 @@
         commonTable.rendertable({
             elem: '#currentTableId',
             id: 'currentTableId',
-            url: '/VehicleManage/Excavator/GetGridJson',
+            url: '/VehicleManage/excavator/GetGridJson',
             filter: {
                 clearFilter: false,
             },
+            //page: {
+            //    limit: 12,
+            //    hash:"currentPage"
+            //},
             cols: [[
                 { type: "checkbox", width: 50 },
-                { field: 'DeviceNo', title: '设备号', width: 120, filter: true },
-                { field: 'DeviceName', title: '设备名称', width: 160, filter: true },
-                { field: 'Brand', title: '品牌', width: 160, filter: true },
-                { field: 'model', title: '型号', minWidth: 220, filter: true },
-                { field: 'devicelength', title: '长', width: 80, filter: true },
-                { field: 'devicewide', title: '宽', width: 120, filter: true },
-                { field: 'devicehigh', title: '高', width: 120, filter: true },
+                { field: 'DeviceNo', title: '挖掘机编号', sort: true, width: 120, filter: true },
+                {
+                    title: '挖掘机名称', width: 120, sort: true, filter: true,
+                    templet: function (d) {
+                        return top.clients.dataItems["wjbh"][d.DeviceNo] == undefined ? "" : top.clients.dataItems["wjbh"][d.DeviceNo];
+                    }
+                },
+                { field: 'monitorID', title: '控制器', width: 130, filter: true },
+                /*{ field: 'DeviceName', title: '挖掘机名称', width: 160, filter: true },*/
+                { field: 'Brand', title: '挖掘机品牌', width: 110, filter: true },
+                { field: 'model', title: '挖掘机型号', minWidth: 110, filter: true },
+                { field: 'IPAddress', title: 'IP地址(WIFI)', width: 160, filter: true },
+                { field: 'port', title: '端口号(WIFI)', minWidth: 110, filter: true },
+                { field: 'IPAddress2', title: 'IP地址(端口映射)', width: 160, filter: true },
+                { field: 'port2', title: '端口号(端口映射)', minWidth: 110, filter: true },
+                //{ field: 'devicelength', title: '长', width: 80, filter: true },
+                //{ field: 'devicewide', title: '宽', width: 120, filter: true },
+                //{ field: 'devicehigh', title: '高', width: 120, filter: true },
                 
                 {
                     field: 'F_CreatorTime', title: '创建时间', width: 160, filter: { type: 'date[yyyy-MM-dd HH:mm:ss]' },
@@ -102,17 +119,18 @@
         });
 
         //行点击事件监听，控制按钮显示
-        var oneList = ["NF-edit", "NF-details"];//选择1条显示
+        var oneList = ["NF-edit", "NF-details", "NF-alarm"];//选择1条显示
         var morerList = ["NF-delete"];//选中1条以上显示
         commonTable.tableRowClick("checkbox", "currentTableFilter", "currentTableId", oneList, morerList);
         //toolbar监听事件
         table.on('toolbar(currentTableFilter)', function (obj) {
+            
             var data = table.checkStatus('currentTableId').data;
             var id = data.length > 0 ? data[0].F_Id : null;
             if (obj.event === 'add') {  // 监听删除操作
                 common.modalOpen({
                     title: "添加挖掘机",
-                    url: "/VehicleManage/Excavator/Form",
+                    url: "/VehicleManage/excavator/Form",
                     width: "1000px",
                     height: "600px",
                 });
@@ -127,7 +145,7 @@
                     ids.push(data[i].F_Id);
                 }
                 common.deleteForm({
-                    url: "/VehicleManage/Excavator/DeleteForm",
+                    url: "/VehicleManage/excavator/DeleteForm",
                     param: { keyValue: ids.join(',') },
                     success: function () {
                         common.reload('data-search-btn');
@@ -139,9 +157,10 @@
                     common.modalMsg("未选中数据", "warning");
                     return false;
                 }
+                
                 common.modalOpen({
                     title: "编辑挖掘机",
-                    url: "/VehicleManage/Excavator/Form?keyValue=" + id,
+                    url: "/VehicleManage/excavator/Form?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                 });
@@ -153,22 +172,35 @@
                 }
                 common.modalOpen({
                     title: "查看挖掘机",
-                    url: "/VehicleManage/Excavator/Details?keyValue=" + id,
+                    url: "/VehicleManage/excavator/Details?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
+                    btn: []
+                });
+            }
+            else if (obj.event === 'alarm') {
+                if (id == null) {
+                    common.modalMsg("未选中数据", "warning");
+                    return false;
+                }
+                common.modalOpen({
+                    title: "查看挖掘机报警信息",
+                    url: "/VehicleManage/excavator/Details2?keyValue=" + id,
+                    width: "1100px",
+                    height: "750px",
                     btn: []
                 });
             }
             else if (obj.event === 'import') {
                 common.modalOpen({
                     title: "导入界面",
-                    url: "/VehicleManage/Excavator/Import",
+                    url: "/VehicleManage/excavator/Import",
                     width: "650px",
                     height: "650px",
                 });
             }
             else if (obj.event === 'export') {
-                window.open('/VehicleManage/Excavator/Export?keyword=' + $('#txt_keyword').val());
+                window.open('/VehicleManage/excavator/Export?keyword=' + $('#txt_keyword').val());
             }
             else if (obj.event === 'TABLE_SEARCH') {
                 var _that = $("#searchField");
@@ -185,7 +217,7 @@
             var id = obj.data.F_Id;
             if (obj.event === 'delete') {
                 common.deleteForm({
-                    url: "/VehicleManage/Excavator/DeleteForm",
+                    url: "/VehicleManage/excavator/DeleteForm",
                     param: { keyValue: id },
                     success: function () {
                         obj.del();
@@ -195,17 +227,26 @@
             else if (obj.event === 'edit') {
                 common.modalOpen({
                     title: "编辑挖掘机",
-                    url: "/VehicleManage/Excavator/Form?keyValue=" + id,
+                    url: "/VehicleManage/excavator/Form?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                 });
             }
             else if (obj.event === 'details') {
                 common.modalOpen({
-                    title: "查看挖掘机",
-                    url: "/VehicleManage/Excavator/Details?keyValue=" + id,
+                    title: "查看挖掘机状态",
+                    url: "/VehicleManage/excavator/Details?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
+                    btn: []
+                });
+            }
+            else if (obj.event === 'alarm') {
+                common.modalOpen({
+                    title: "查看挖掘机报警信息",
+                    url: "/VehicleManage/excavator/Details2?keyValue=" + id,
+                    width: "1100px",
+                    height: "750px",
                     btn: []
                 });
             }

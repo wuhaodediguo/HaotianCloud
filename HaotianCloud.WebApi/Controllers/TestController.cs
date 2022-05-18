@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HaotianCloud.WebApi.Controllers
 {
     /// <summary>
-    /// 测试文件0001
+    /// 测试文件
     /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -21,6 +21,16 @@ namespace HaotianCloud.WebApi.Controllers
         // GET: api/<controller>
         [HttpGet]
         public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
+        /// <summary>
+        /// 测试文件get2
+        /// </summary>
+        // GET: api/<controller>
+        [HttpGet]
+        public IEnumerable<string> Get2()
         {
             return new string[] { "value1", "value2" };
         }

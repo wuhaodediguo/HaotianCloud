@@ -1,0 +1,225 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+    <script>
+        layui.use(['jquery', 'upload', 'form', 'laydate', 'common', 'optimizeSelectOption'], function () {
+            var form = layui.form,
+                $ = layui.$,
+                common = layui.common,
+                upload = layui.upload,
+                laydate = layui.laydate;
+            //权限字段
+            common.authorizeFields('adminform');
+            
+            wcLoading.close();
+            //监听提交
+            form.on('submit(saveBtn)', function (data) {
+                    postData = data.field;
+                common.submitForm({
+                    url: '/SystemOrganize/SystemSet/SetSubmitFormA',
+                    param: postData,
+                    close: false,
+                    success: function () {
+                    }
+                })
+                return false;
+            });
+
+            //监听cq
+            form.on('submit(rebootBtn)', function (data) {
+                postData = data.field;
+                common.submitForm({
+                    url: '/SystemOrganize/SystemSet/SetSubmitreboot',
+                    param: postData,
+                    close: false,
+                    success: function () {
+                    }
+                })
+                return false;
+            });
+
+            // 监听搜索操作
+           
+            form.on('submit(data-search-btn)', function (data) {
+                var params = [];
+                params.push({ name: 'ip', value: $("#IPaddress").val() });
+
+                $.ajax({
+                    url: '/SystemOrganize/SystemSet/GetConfigsJson',
+                    dataType: 'json',
+                    async: false,
+                    cache: false,
+                    data: params,
+                    success: function (data) {
+
+                        var encode = data.encode;
+                        if (encode) {
+                            aenc_paramlist = encode[0].aenc_param;
+                            var tongdaolist = [];
+                            for (var kk = 1; kk <= aenc_paramlist.length; kk++) {
+                                tongdaolist.push(kk);
+                            }
+                            $("#aenc_paramlist").val(JSON.stringify(aenc_paramlist));
+                            debugger
+                            $("#vdec_paramlist").val(JSON.stringify(encode[0].vdec_param));
+                            $("#venc_paramlist").val(JSON.stringify(encode[0].venc_param));
+                            $("#tongdaolist").bindSelect({
+                                data: tongdaolist,
+                                id: "",
+                            });
+                            var v1 = 0;
+                            $("#rtmp_publish_uri").val(encode[0].venc_param[v1].rtmp_publish_uri);
+                            $("#rtsp_uri").val(encode[0].venc_param[v1].rtsp_uri);
+
+                            $("#rtmp_enable").val(encode[0].venc_param[v1].rtmp_enable);
+                            $("#rtsp_enable").val(encode[0].venc_param[v1].rtsp_enable);
+                            $("#rtsp_username").val(encode[0].venc_param[v1].rtsp_username);
+                            $("#rtsp_password").val(encode[0].venc_param[v1].rtsp_password);
+                            form.render();
+                        }
+                    }
+                });
+                return false;
+            });
+
+            //监听select下拉选中事件
+            form.on('select(tongdaolist)', function (data) {
+                
+                var data01 = $("#aenc_paramlist").val();
+                var data02 = $("#vdec_paramlist").val();
+                var data03 = $("#venc_paramlist").val();
+                //var data1 = JSON.parse(data01);
+               
+                //var data2 = JSON.parse(data02);
+               
+                var data3 = JSON.parse(data03);
+                
+                var v1 = $("#tongdaolist").val();
+                $("#rtmp_publish_uri").val(data3[v1].rtmp_publish_uri);
+                $("#rtsp_uri").val(data3[v1].rtsp_uri);
+                
+                $("#rtmp_enable").val(data3[v1].rtmp_enable);
+                $("#rtsp_enable").val(data3[v1].rtsp_enable);
+                $("#rtsp_username").val(data3[v1].rtsp_username);
+                $("#rtsp_password").val(data3[v1].rtsp_password);
+                form.render();
+            });
+
+        });
+    </script>
+
+<body>
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <input type="hidden" id="aenc_paramlist" name="aenc_paramlist">
+            <input type="hidden" id="vdec_paramlist" name="vdec_paramlist">
+            <input type="hidden" id="venc_paramlist" name="venc_paramlist">
+           
+
+            <div class="layui-form layuimini-form" lay-filter="adminform">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">盒子IP地址:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="IPaddress" name="IPaddress" maxlength="50" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">Key:</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="adminkey1" name="adminkey1" style="width:200px;" maxlength="50" value="f6fdffe48c908deb0f4c3bd36c032e72" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <button type="submit" class="layui-btn layui-btn-primary" lay-submit lay-filter="data-search-btn"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+                    </div>
+                </div>
+
+                @*<div class="layui-col-md6 layui-col-xs6 layui-hide">
+            <label class="layui-form-label">通道设置</label>
+            <div class="layui-input-block">
+                <input type="text" id="IPaddress" name="IPaddress" maxlength="50" autocomplete="off" class="layui-input">
+            </div>
+        </div>*@
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">通道</label>
+                        <div class="layui-input-block">
+                            <select id="tongdaolist" name="tongdaolist" lay-filter="tongdaolist" lay-verify="required">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">Key</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="adminkey" name="adminkey" maxlength="50" value="f6fdffe48c908deb0f4c3bd36c032e72" class="layui-input">
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">是否启用rtmp</label>
+                        <div class="layui-input-block">
+                            <select id="rtmp_enable" name="rtmp_enable">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">rtmp发布地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="rtmp_publish_uri" name="rtmp_publish_uri" maxlength="50" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">是否启用rtsp</label>
+                        <div class="layui-input-block">
+                            <select id="rtsp_enable" name="rtsp_enable">
+                                <option value="1">是</option>
+                                <option value="0">否</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label required">rtsp发布地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="rtsp_uri" name="rtsp_uri" maxlength="50" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">rtsp账号</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="rtsp_username" name="rtsp_username" maxlength="50" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-md6 layui-col-xs6 layui-hide">
+                        <label class="layui-form-label ">rtsp密码</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="rtsp_password" name="rtsp_password" maxlength="50" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="text-align:center">
+                    <button type="submit" class="layui-btn site-demo-active" lay-submit lay-filter="saveBtn">确认保存</button>
+                </div>
+                <div class="layui-form-item" style="text-align:center">
+                    <button type="submit" class="layui-btn site-demo-active" lay-submit lay-filter="rebootBtn">重启设备</button>
+                </div>
+                @*<button class="layui-btn site-demo-active" id="submit" lay-filter="saveBtn">确认保存</button>
+        </div>*@
+            </div>
+        </div>
+        </div>
+</body>
+

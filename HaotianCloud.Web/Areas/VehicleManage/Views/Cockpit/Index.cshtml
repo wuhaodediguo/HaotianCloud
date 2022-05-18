@@ -26,14 +26,15 @@
                 <button id="NF-add" name="NF-add" authorize class="layui-btn layui-btn-sm data-add-btn" lay-event="add"><i class="layui-icon">&#xe654;</i>新增</button>
                 <button id="NF-edit" name="NF-edit" authorize class="layui-btn layui-btn-sm layui-btn-warm data-edit-btn layui-hide" lay-event="edit"><i class="layui-icon">&#xe642;</i>修改</button>
                 <button id="NF-delete" name="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn layui-hide" lay-event="delete"> <i class="layui-icon">&#xe640;</i>删除</button>
-                <button id="NF-details" name="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn layui-hide" lay-event="details"> <i class="layui-icon">&#xe60b;</i>查看</button>
+                <button id="NFmodifydevice" name="NFmodifydevice" class="layui-btn layui-btn-sm layui-btn-normal data-info-btn" lay-event="modifydevice"> <i class="layui-icon">&#xe60b;</i>修改设备</button>
+                <button id="NF-enabled" name="NF-enabled" class="layui-btn layui-btn-sm data-enabled-btn" lay-event="enabled"> <i class="fa fa-play-circle"></i>重启设备</button>
             </div>
         </script>
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
         <script type="text/html" id="currentTableBar">
             <a id="NF-edit" authorize class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i></a>
             <a id="NF-delete" authorize class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"><i class="layui-icon">&#xe640;</i></a>
-            <a id="NF-details" authorize class="layui-btn layui-btn-sm layui-btn-normal data-info-btn" lay-event="details"><i class="layui-icon">&#xe60b;</i></a>
+          
         </script>
     </div>
 </div>
@@ -53,19 +54,33 @@
         commonTable.rendertable({
             elem: '#currentTableId',
             id: 'currentTableId',
-            url: '/VehicleManage/Cockpit/GetGridJson',
+            url: '/VehicleManage/cockpit/GetGridJson',
             filter: {
                 clearFilter: false,
             },
             cols: [[
                 { type: "checkbox", width: 50 },
-                { field: 'DeviceNo', title: '设备号', width: 120, filter: true },
-                { field: 'DeviceName', title: '设备名称', width: 160, filter: true },
-                { field: 'Brand', title: '品牌', width: 160, filter: true },
-                { field: 'model', title: '型号', minWidth: 220, filter: true },
-                { field: 'devicelength', title: '长', width: 80, filter: true },
-                { field: 'devicewide', title: '宽', width: 120, filter: true },
-                { field: 'devicehigh', title: '高', width: 120, filter: true },
+                { field: 'DeviceNo', title: '驾驶舱编号', sort: true, width: 120, filter: true },
+                {
+                    title: '驾驶舱名称', width: 120, sort: true, filter: true,
+                    templet: function (d) {
+                        return top.clients.dataItems["jscbh"][d.DeviceNo] == undefined ? "" : top.clients.dataItems["jscbh"][d.DeviceNo];
+                    }
+                },
+                //{ field: 'DeviceNo', title: '驾驶舱编号', sort: true,  width: 120, filter: true },
+                //{ field: 'DeviceName', title: '驾驶舱名称', sort: true,  width: 160, filter: true },
+                { field: 'Brand', title: '驾驶舱品牌', width: 120, filter: true },
+                { field: 'model', title: '驾驶舱型号', minWidth: 120, filter: true },
+                /*{ field: 'Networkmode', title: '网络模式', minWidth: 80, filter: true },*/
+                {
+                    field: 'Networkmode', title: '网络模式', width: 120, sort: true, filter: true,
+                    templet: function (d) {
+                        return top.clients.dataItems["Networkmode"][d.Networkmode] == undefined ? "" : top.clients.dataItems["Networkmode"][d.Networkmode];
+                    }
+                },
+                //{ field: 'devicelength', title: '长', width: 80, filter: true },
+                //{ field: 'devicewide', title: '宽', width: 80, filter: true },
+                //{ field: 'devicehigh', title: '高', width: 80, filter: true },
                 
                 {
                     field: 'F_CreatorTime', title: '创建时间', width: 160, filter: { type: 'date[yyyy-MM-dd HH:mm:ss]' },
@@ -105,13 +120,14 @@
         var morerList = ["NF-delete"];//选中1条以上显示
         commonTable.tableRowClick("checkbox", "currentTableFilter", "currentTableId", oneList, morerList);
         //toolbar监听事件
+        var test = 0;
         table.on('toolbar(currentTableFilter)', function (obj) {
             var data = table.checkStatus('currentTableId').data;
             var id = data.length > 0 ? data[0].F_Id : null;
             if (obj.event === 'add') {  // 监听删除操作
                 common.modalOpen({
                     title: "添加驾驶舱",
-                    url: "/VehicleManage/Cockpit/Form",
+                    url: "/VehicleManage/cockpit/Form",
                     width: "1000px",
                     height: "600px",
                 });
@@ -126,7 +142,7 @@
                     ids.push(data[i].F_Id);
                 }
                 common.deleteForm({
-                    url: "/VehicleManage/Cockpit/DeleteForm",
+                    url: "/VehicleManage/cockpit/DeleteForm",
                     param: { keyValue: ids.join(',') },
                     success: function () {
                         common.reload('data-search-btn');
@@ -138,9 +154,10 @@
                     common.modalMsg("未选中数据", "warning");
                     return false;
                 }
+                debugger
                 common.modalOpen({
                     title: "编辑驾驶舱",
-                    url: "/VehicleManage/Cockpit/Form?keyValue=" + id,
+                    url: "/VehicleManage/cockpit/Form?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                 });
@@ -152,7 +169,7 @@
                 }
                 common.modalOpen({
                     title: "查看驾驶舱",
-                    url: "/VehicleManage/Cockpit/Details?keyValue=" + id,
+                    url: "/VehicleManage/cockpit/Details?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                     btn: []
@@ -161,13 +178,13 @@
             else if (obj.event === 'import') {
                 common.modalOpen({
                     title: "导入界面",
-                    url: "/VehicleManage/Cockpit/Import",
+                    url: "/VehicleManage/cockpit/Import",
                     width: "650px",
                     height: "600px",
                 });
             }
             else if (obj.event === 'export') {
-                window.open('/VehicleManage/Cockpit/Export?keyword=' + $('#txt_keyword').val());
+                window.open('/VehicleManage/cockpit/Export?keyword=' + $('#txt_keyword').val());
             }
             else if (obj.event === 'TABLE_SEARCH') {
                 var _that = $("#searchField");
@@ -177,6 +194,46 @@
                     _that.addClass('layui-hide');
                 }
             }
+            else if (obj.event === 'enabled') {
+                if (data.length == 0) {
+                    common.modalMsg("未选中数据", "warning");
+                    return false;
+                }
+                
+                if (test > 0) {
+                    common.modalMsg("设备正在启动中，请稍等！", "warning");
+                    return false;
+                }
+                test++;
+                common.modalConfirm("注：您确定要【重启】该设备吗？", function (r) {
+
+                    if (r) {
+                        common.submitForm({
+                            url: "/VehicleManage/cockpit/Restart",
+                            param: { keyValue: data[0].F_Id, status: 1 },
+                            close: false,
+                            success: function () {
+                                test = 0;
+                                common.reload('data-search-btn');
+                            }
+                        })
+                    }
+                });
+            }
+            else if (obj.event === 'modifydevice') {
+                if (data.length == 0) {
+                    common.modalMsg("未选中数据", "warning");
+                    return false;
+                }
+                var parentform = window.name;
+                common.modalOpen({
+                    title: "设备明细",
+                    url: "/VehicleManage/monitor/AddFormD?ids=" + data[0].F_Id,
+                    width: "800px",
+                    height: "600px",
+                });
+            }
+
             return false;
         });
         //toolrow监听事件
@@ -184,7 +241,7 @@
             var id = obj.data.F_Id;
             if (obj.event === 'delete') {
                 common.deleteForm({
-                    url: "/VehicleManage/Cockpit/DeleteForm",
+                    url: "/VehicleManage/cockpit/DeleteForm",
                     param: { keyValue: id },
                     success: function () {
                         obj.del();
@@ -194,7 +251,7 @@
             else if (obj.event === 'edit') {
                 common.modalOpen({
                     title: "编辑驾驶舱",
-                    url: "/VehicleManage/Cockpit/Form?keyValue=" + id,
+                    url: "/VehicleManage/cockpit/Form?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                 });
@@ -202,7 +259,7 @@
             else if (obj.event === 'details') {
                 common.modalOpen({
                     title: "查看驾驶舱",
-                    url: "/VehicleManage/Cockpit/Details?keyValue=" + id,
+                    url: "/VehicleManage/cockpit/Details?keyValue=" + id,
                     width: "1000px",
                     height: "600px",
                     btn: []

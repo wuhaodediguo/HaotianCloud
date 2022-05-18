@@ -90,7 +90,9 @@ namespace HaotianCloud.Web.Areas.SystemOrganize.Controllers
                 }
                 treeList.Add(tree);
             }
-            return DTreeResult(treeList.TreeList());
+
+            var aa = treeList.TreeList();
+            return DTreeResult(aa);
         }
         [HttpPost]
         [IgnoreAntiforgeryToken]

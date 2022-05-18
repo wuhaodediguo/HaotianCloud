@@ -5,6 +5,7 @@ using HaotianCloud.Code;
 using HaotianCloud.Domain.SystemOrganize;
 using Chloe;
 using HaotianCloud.DataBase;
+using HaotianCloud.Service.VehicleManage;
 
 namespace HaotianCloud.Service.SystemOrganize
 {
@@ -20,6 +21,7 @@ namespace HaotianCloud.Service.SystemOrganize
         private string cacheKeyOperator = "HaotianCloud_operator_";// +登录者token
         private string cacheKeyUser = "HaotianCloud_userdata_";
         
+
         public SystemSetService(IDbContext context) : base(context)
         {
             _context = context;
@@ -141,6 +143,7 @@ namespace HaotianCloud.Service.SystemOrganize
             }
             var set=await ibs.FindEntity<SystemSetEntity>(entity.F_Id);
             var tempkey=new RepositoryBase(DBContexHelper.Contex(set.F_DbString, set.F_DBProvider)).IQueryable<UserEntity>().Where(a => a.F_IsAdmin == true && a.F_OrganizeId == keyValue).FirstOrDefault().F_Id;
+
             await CacheHelper.Remove(cacheKeyOperator + "info_" + tempkey);
             if (currentuser.UserId == null)
             {

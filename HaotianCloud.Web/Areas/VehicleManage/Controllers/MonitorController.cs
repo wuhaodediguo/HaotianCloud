@@ -8,6 +8,7 @@ using HaotianCloud.Service.VehicleManage;
 using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using HaotianCloud.Service.SystemManage;
 
 namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
 {
@@ -17,13 +18,16 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
     /// 描 述：控制器类
     /// </summary>
     [Area("VehicleManage")]
-    [AllowAnonymous]
-    public class MonitorController :  ControllerBase
+    //[AllowAnonymous]
+    public class monitorController :  ControllerBase
     {
 
         //属性注入示例
         public MonitorService _service { get; set; }
         public Devicechn_infoService _service2 { get; set; }
+        public ItemsDataService _itemsDetailService { get; set; }
+        public CockpitService _cockpitService { get; set; }
+
         #region 获取数据
         [HttpGet]
         [HandlerAjaxOnly]
@@ -31,8 +35,9 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         {
             //此处需修改
             pagination.order = "desc";
-            pagination.sort = "F_CreatorTime desc";
+            pagination.sort = "DeviceNo,devicetype asc";
             var data = await _service.GetLookList(pagination,keyword);
+            
             return Success(pagination.records, data);
         }
         [HttpGet]
@@ -54,12 +59,46 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         }
 
         [HttpGet]
+        public virtual ActionResult AddFormD()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
         [HandlerAjaxOnly]
         public async Task<ActionResult> GetFormGridJson(string keyword)
         {
             var data = await _service.GetLookList(keyword);
-            
+            //var itemdata = await _itemsDetailService.GetList();
+            //var data = itemdata.FindAll(t => t.F_ItemId == "ec4832c8-74b8-4e91-a3e2-76a06bd9a034");
+            //if (!string.IsNullOrEmpty(keyword))
+            //{
+            //    data = data.FindAll(t => t.F_ItemCode == keyword);
+            //}
+
             return Success(data.Count, data);
+        }
+
+        [HttpGet]
+        [HandlerAjaxOnly]
+        public async Task<ActionResult> GetFormGridJsonD(string keyword)
+        {
+            var data = await _cockpitService.GetForm(keyword);
+            if (data != null)
+            {
+                var temp02 = await _service.FindList(data.monitorID);
+                return Success(temp02.Count, temp02);
+            }
+           
+            //var itemdata = await _itemsDetailService.GetList();
+            //var data = itemdata.FindAll(t => t.F_ItemId == "ec4832c8-74b8-4e91-a3e2-76a06bd9a034");
+            //if (!string.IsNullOrEmpty(keyword))
+            //{
+            //    data = data.FindAll(t => t.F_ItemCode == keyword);
+            //}
+
+            return Success(0, data);
         }
 
         [HttpGet]
@@ -123,29 +162,29 @@ namespace HaotianCloud.Web.Areas.VehicleManage.Controllers
         {
             try
             {
-                JArray jarrayinfo = JArray.Parse(rowsdetail);
+                //JArray jarrayinfo = JArray.Parse(rowsdetail);
 
                 await _service.SubmitForm(entity, keyValue);
 
-                var data = _service.GetMaxIDList("");
-                string maxF_Id = data.Result.F_Id;
-                //
-                await _service2.DeleteForm(maxF_Id);
-                List<Devicechn_infoEntity> carrierListinfo = new List<Devicechn_infoEntity>();
-                for (int ij = 0; ij < jarrayinfo.Count; ij++)
-                {
-                    Devicechn_infoEntity newData = new Devicechn_infoEntity();
-                    newData.monitiorid = maxF_Id;
-                    newData.DeviceType = ((JObject)jarrayinfo[ij])["DeviceType"] == null ? 1 : int.Parse(((JObject)jarrayinfo[ij])["DeviceType"].ToString());
-                    newData.CameraType = ((JObject)jarrayinfo[ij])["CameraType"] == null ? "" : ((JObject)jarrayinfo[ij])["CameraType"].ToString();
-                    newData.Model = ((JObject)jarrayinfo[ij])["Model"] == null ? "" : ((JObject)jarrayinfo[ij])["Model"].ToString();
+                //var data = _service.GetMaxIDList("");
+                //string maxF_Id = data.Result.F_Id;
+                ////
+                //await _service2.DeleteForm(maxF_Id);
+                //List<Devicechn_infoEntity> carrierListinfo = new List<Devicechn_infoEntity>();
+                //for (int ij = 0; ij < jarrayinfo.Count; ij++)
+                //{
+                //    Devicechn_infoEntity newData = new Devicechn_infoEntity();
+                //    newData.monitiorid = maxF_Id;
+                //    newData.DeviceType = ((JObject)jarrayinfo[ij])["DeviceType"] == null ? 1 : int.Parse(((JObject)jarrayinfo[ij])["DeviceType"].ToString());
+                //    newData.CameraType = ((JObject)jarrayinfo[ij])["CameraType"] == null ? "" : ((JObject)jarrayinfo[ij])["CameraType"].ToString();
+                //    newData.Model = ((JObject)jarrayinfo[ij])["Model"] == null ? "" : ((JObject)jarrayinfo[ij])["Model"].ToString();
 
-                    newData.Manufacturer = ((JObject)jarrayinfo[ij])["Manufacturer"] == null ? "" : ((JObject)jarrayinfo[ij])["Manufacturer"].ToString();
-                    newData.ChnName = ((JObject)jarrayinfo[ij])["ChnName"] == null ? "" : ((JObject)jarrayinfo[ij])["ChnName"].ToString();
-                    newData.chnNumber = ((JObject)jarrayinfo[ij])["chnNumber"] == null ? "" : ((JObject)jarrayinfo[ij])["chnNumber"].ToString();
+                //    newData.Manufacturer = ((JObject)jarrayinfo[ij])["Manufacturer"] == null ? "" : ((JObject)jarrayinfo[ij])["Manufacturer"].ToString();
+                //    newData.ChnName = ((JObject)jarrayinfo[ij])["ChnName"] == null ? "" : ((JObject)jarrayinfo[ij])["ChnName"].ToString();
+                //    newData.chnNumber = ((JObject)jarrayinfo[ij])["chnNumber"] == null ? "" : ((JObject)jarrayinfo[ij])["chnNumber"].ToString();
 
-                    await _service2.SubmitForm(newData, "");
-                }
+                //    await _service2.SubmitForm(newData, "");
+                //}
 
                 return await Success("操作成功。", "", keyValue);
             }
